@@ -71,6 +71,7 @@ h3 { margin-top: 0.5rem; text-align: center; border-bottom: 1px solid var(--ui-b
 		  width: 100%;
 		  height: 100%;
 		  text-align: center;
+		  z-index: 10;
 		  }
 	  	#bigcontainer {
 		  background-image: url('bg.png');
