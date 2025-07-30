@@ -162,7 +162,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
 					// Process missing chatters
 					missingChatters.forEach(chatter => {
 						console.log("Missing chatter:", chatter.user_name);
-						removeChattersTree(chatter.user_id, chatter.user_name);
+						removeChattersTree(chatter.user_name);
 					});
 		
 					// Update the previous chatters list for the next run
@@ -203,7 +203,36 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 });
         }
 				
-
+		function removeChattersTree(username) {
+		// Find all the remove buttons on the page.
+		const allRemoveButtons = document.querySelectorAll('.remove-btn');
+	
+		// Iterate through the buttons to find the one with the matching username in its ID.
+		for (const btn of allRemoveButtons) {
+			const id = btn.dataset.id;
+	
+			// Check if the ID ends with the provided username, preceded by a '-'.
+			// This makes the check more specific (e.g., avoids matching a user 'test' in 'my-latest-test-run').
+			if (id && id.endsWith('-' + username)) {
+				const plant = activePlants.get(id);
+	
+				// Once the correct plant is found, execute the original logic.
+				if (plant && (plant.status === 'idle' || plant.status === 'growing')) {
+					plant.isPermanentRemoval = true;
+					plant.status = 'falling';
+					btn.disabled = true;
+					btn.closest('.plant-item').style.opacity = 0.5;
+					
+					// Log the found ID for confirmation and exit the loop.
+					console.log(`Found and initiated removal for ID: ${id}`);
+					return; 
+				}
+			}
+		}
+	
+		// If the loop completes without finding the user, log a message.
+		console.log(`No active plant found for username: ${username}`);
+	}
 		
 
         function requestHooks(user_id, my_id) {
@@ -708,6 +737,8 @@ Simply add it as a browser source by copying the URL from the address bar after 
             }
         }
     }
+	
+	
 
     function startWeather(type) {
         if (weather.type !== 'none') return;
