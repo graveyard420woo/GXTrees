@@ -59,7 +59,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
         var session_id = '';
         var my_user_id = '';
 		var chattersColor = '';
-		var barColorUser = '';
+		let previousChatters = [];		
 										
 		document.getElementById('authorize').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=moderator:read:chatters+moderator:read:followers');
 
@@ -141,12 +141,33 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 .then(resp => resp.json())
                 .then(resp => {
 					//console.dir(resp.data[0]);
-					const numberOfChatters = `${resp.data.length}`
-					  for (let i = 0; i < numberOfChatters; i++) {
-						  console.dir(resp.data[i]);
-						  makeChattersTree(`${resp.data[i].user_id}`, `${resp.data[i].user_name}`);
-					  }
-                })
+					const currentChatters = resp.data.map(chatter => ({ user_id: chatter.user_id, user_name: chatter.user_name }));
+
+					// Find new chatters
+					const newChatters = currentChatters.filter(currentChatter =>
+						!previousChatters.some(previousChatter => previousChatter.user_id === currentChatter.user_id)
+					);
+		
+					// Find missing chatters
+					const missingChatters = previousChatters.filter(previousChatter =>
+						!currentChatters.some(currentChatter => currentChatter.user_id === previousChatter.user_id)
+					);
+		
+					// Process new chatters
+					newChatters.forEach(chatter => {
+						console.log("New chatter:", chatter.user_name);
+						makeChattersTree(chatter.user_id, chatter.user_name);
+					});
+		
+					// Process missing chatters
+					missingChatters.forEach(chatter => {
+						console.log("Missing chatter:", chatter.user_name);
+						removeChattersTree(chatter.user_id, chatter.user_name);
+					});
+		
+					// Update the previous chatters list for the next run
+					previousChatters = currentChatters;
+						})
                 .catch(err => {
                     console.log(err);
                     log('Error with Users Call');
