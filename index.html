@@ -112,7 +112,10 @@ Simply add it as a browser source by copying the URL from the address bar after 
                         session_id = id;
                         my_user_id = resp.data[0].id;
                         requestHooks(resp.data[0].id, my_user_id);	
-						getStuffNow(my_user_id);							
+						//getStuffNow(my_user_id);				
+						setInterval(() => {
+							getStuffNow(my_user_id)
+						}, 12000); // A small delay							
                     });
                     socket_space.on('session_keepalive', () => {
                         document.getElementById('keepalive').textContent = new Date();
