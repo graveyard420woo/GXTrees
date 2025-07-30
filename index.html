@@ -156,7 +156,11 @@ Simply add it as a browser source by copying the URL from the address bar after 
 					// Process new chatters
 					newChatters.forEach(chatter => {
 						console.log("New chatter:", chatter.user_name);
-						makeChattersTree(chatter.user_id, chatter.user_name);
+						if (chatter.user_name == "StreamElements"){
+							console.log("no tree for", chatter.user_name);
+						}else{
+							makeChattersTree(chatter.user_id, chatter.user_name);
+						}
 					});
 		
 					// Process missing chatters
