@@ -61,7 +61,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
 		var chattersColor = '';
 		let previousChatters = [];		
 										
-		document.getElementById('authorize').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=moderator:read:chatters+moderator:read:followers');
+		document.getElementById('authorize').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=moderator:read:chatters+moderator:read:followers+user:read:chat');
 
         if (document.location.hash && document.location.hash != '') {
             log('Checking for token');
@@ -119,7 +119,12 @@ Simply add it as a browser source by copying the URL from the address bar after 
                     });
                     socket_space.on('session_keepalive', () => {
                         document.getElementById('keepalive').textContent = new Date();
-                    });					
+                    });
+					socket_space.on('channel.chat.message', ({ metadata, payload }) => {
+    					let { event } = payload;
+    					let { chatter_user_name , message } = event;		
+							console.log(`${chatter_user_name}: ${message.text}`);										
+					});				
 				})	
                 .catch(err => {
                     console.log(err);
@@ -242,7 +247,8 @@ Simply add it as a browser source by copying the URL from the address bar after 
         function requestHooks(user_id, my_id) {
             let eventSubTypes = {
 				
-				  'channel.follow': { version: "2", condition: { broadcaster_user_id: user_id, moderator_user_id: user_id } }
+				  'channel.follow': { version: "2", condition: { broadcaster_user_id: user_id, moderator_user_id: user_id } },
+				  'channel.chat.message': { version: "1", condition: { broadcaster_user_id: user_id } }
 				  /*
 				  'channel.prediction.begin': { version: "1", condition: { broadcaster_user_id: user_id } },
 				  'channel.prediction.progress': { version: "1", condition: { broadcaster_user_id: user_id } },
