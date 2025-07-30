@@ -60,9 +60,9 @@ Simply add it as a browser source by copying the URL from the address bar after 
 		var chattersColor = '';
 		var barColorUser = '';
 		
-		document.getElementById("arboretum-canvas").style.display = "none";
+		document.getElementById("arboretum-canvas").style.opacity = "0";
 								
-		document.getElementById('authorize').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=moderator:read:chatters');
+		document.getElementById('authorize').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=moderator:read:chatters&scope=moderator:read:followers');
 
         if (document.location.hash && document.location.hash != '') {
             log('Checking for token');
@@ -184,6 +184,8 @@ Simply add it as a browser source by copying the URL from the address bar after 
 
         function requestHooks(user_id, my_id) {
             let eventSubTypes = {
+				
+				  'channel.follow': { version: "1", condition: { broadcaster_user_id: user_id } }
 				  /*
 				  'channel.prediction.begin': { version: "1", condition: { broadcaster_user_id: user_id } },
 				  'channel.prediction.progress': { version: "1", condition: { broadcaster_user_id: user_id } },
@@ -230,7 +232,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
                         log(`Created ${type}`);
 						//clear the scene for browser source use
 						document.getElementById("bigcontainer").style.display = "none";
-						document.getElementById("arboretum-canvas").style.display = "block";
+						document.getElementById("arboretum-canvas").style.opacity = "100%";
                     }
                 })
                 .catch(err => {
