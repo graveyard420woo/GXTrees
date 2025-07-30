@@ -138,9 +138,10 @@ Simply add it as a browser source by copying the URL from the address bar after 
             )
                 .then(resp => resp.json())
                 .then(resp => {
-					console.dir(resp.data[0]);
+					//console.dir(resp.data[0]);
 					const numberOfChatters = `${resp.data[0].length}`
 					  for (let i = 0; i < numberOfChatters; i++) {
+						  console.dir(resp.data[i]);
 						  makeChattersTree(`${resp.data[i].user_id}`, `${resp.data[i].user_name}`);
 					  }
                 })
@@ -185,7 +186,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
         function requestHooks(user_id, my_id) {
             let eventSubTypes = {
 				
-				  'channel.follow': { version: "1", condition: { broadcaster_user_id: user_id } }
+				  'channel.follow': { version: "2", condition: { broadcaster_user_id: user_id } }
 				  /*
 				  'channel.prediction.begin': { version: "1", condition: { broadcaster_user_id: user_id } },
 				  'channel.prediction.progress': { version: "1", condition: { broadcaster_user_id: user_id } },
