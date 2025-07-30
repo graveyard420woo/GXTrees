@@ -138,7 +138,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 .then(resp => resp.json())
                 .then(resp => {
 					//console.dir(resp.data[0]);
-					const numberOfChatters = `${resp.data[0].length}`
+					const numberOfChatters = `${resp.data.length}`
 					  for (let i = 0; i < numberOfChatters; i++) {
 						  console.dir(resp.data[i]);
 						  makeChattersTree(`${resp.data[i].user_id}`, `${resp.data[i].user_name}`);
