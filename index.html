@@ -39,13 +39,20 @@ Simply add it as a browser source by copying the URL from the address bar after 
 
     <div id="plant-list-container">
         <h3>Arboretum</h3>
-        <div id="plant-list">
-        
+        <div id="plant-list"></div>
+    </div>
 
     <div id="ui-container" class="controls">
         <input type="text" id="name-input" placeholder="Seed Name..." value="Midsummer">
         <input type="color" id="color-picker" value="#42A869">
         <button id="generate-btn">Plant</button>
+    </div>
+
+    <div id="extracontrols" class="controls-extra">
+        <button id="meteor-btn">Meteor Strike</button>
+        <button id="lightning-btn">Lightning</button>
+        <button id="fire-btn">Wildfire</button>
+        <button id="golf-btn">Golf</button>
     </div>
     
     <script type="text/javascript" src="eventsub.js"></script>
@@ -123,7 +130,11 @@ Simply add it as a browser source by copying the URL from the address bar after 
 					socket_space.on('channel.chat.message', ({ metadata, payload }) => {
     					let { event } = payload;
     					let { chatter_user_name , message } = event;		
-							console.log(`${chatter_user_name}: ${message.text}`);										
+							console.log(`${chatter_user_name}: ${message.text}`);
+							startEvent('golf', `${chatter_user_name}`)	
+							if(`${message.text}` == '!meteor'){startEvent('meteor')}
+							if(`${message.text}` == '!lightning'){startEvent('lightning')}
+							if(`${message.text}` == '!wildfire'){startEvent('forestFire')}							
 					});				
 				})	
                 .catch(err => {
@@ -296,6 +307,8 @@ Simply add it as a browser source by copying the URL from the address bar after 
 						//clear the scene for browser source use
 						document.getElementById("bigcontainer").style.display = "none";
 						document.getElementById("plant-list-container").style.display = "none";
+						document.getElementById("ui-container").style.display = "none";
+						document.getElementById("extracontrols").style.display = "none";
                     }
                 })
                 .catch(err => {
@@ -304,21 +317,29 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 });
         }
 	
-    // ## 1. SETUP & STATE ##
+	// ## Geminis shit
+	
+	 // ## 1. SETUP & STATE ##
     const canvas = document.getElementById('arboretum-canvas');
     const ctx = canvas.getContext('2d');
     const nameInput = document.getElementById('name-input');
     const colorPicker = document.getElementById('color-picker');
     const generateBtn = document.getElementById('generate-btn');
     const plantListDiv = document.getElementById('plant-list');
+    const meteorBtn = document.getElementById('meteor-btn');
+    const lightningBtn = document.getElementById('lightning-btn');
+    const fireBtn = document.getElementById('fire-btn');
+    const golfBtn = document.getElementById('golf-btn');
 
     const activePlants = new Map();
+    const activeCreatures = new Set();
     const labelRects = new Map();
-    let landscapeCanvas, landscapeHeightMap, landCtx;
+    let landscapeCanvas, landscapeHeightMap, landCtx, golfHole;
     let weather = { type: 'none', particles: [], life: 0, fade: 0, intensity: 0 };
     let events = [];
     let ambientLife = [];
     let clouds = [];
+    let sparkles = [];
     let puddles = [];
     let globalRandom;
     let rainCount = 0;
@@ -352,8 +373,8 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 rgbToString(hslToRgb(baseHsl.h, baseHsl.s * 0.95, baseHsl.l * 0.65)),
             ],
             bark: [
-                rgbToString(hslToRgb((baseHsl.h + 0.05) % 1, 0.1, 0.5)),
-                rgbToString(hslToRgb((baseHsl.h + 0.05) % 1, 0.15, 0.35)),
+                rgbToString(hslToRgb((baseHsl.h + 0.05) % 1, 0.2, 0.5)),
+                rgbToString(hslToRgb((baseHsl.h + 0.05) % 1, 0.25, 0.35)),
             ],
         };
     };
@@ -379,38 +400,44 @@ Simply add it as a browser source by copying the URL from the address bar after 
             const hillTopY = startY + yOffset;
             landscapeHeightMap[x] = hillTopY;
             const gradient = landCtx.createLinearGradient(x, hillTopY, x, canvas.height);
-            gradient.addColorStop(0, `rgb(90, 120, 70)`);
-            gradient.addColorStop(0.5, `rgb(60, 85, 45)`);
-            gradient.addColorStop(1, `rgb(45, 65, 35)`);
+            gradient.addColorStop(0, `rgb(100, 140, 80)`);
+            gradient.addColorStop(0.5, `rgb(70, 105, 55)`);
+            gradient.addColorStop(1, `rgb(55, 75, 45)`);
             landCtx.fillStyle = gradient;
             landCtx.fillRect(x, hillTopY, 1, canvas.height - hillTopY);
         }
 
-        for (let i = 0; i < 400; i++) {
-            const x = globalRandom() * canvas.width;
-            const y = landscapeHeightMap[Math.round(x)] + globalRandom() * (canvas.height - landscapeHeightMap[Math.round(x)]);
-            const type = globalRandom();
-            if (type < 0.3) {
-                const color = `hsl(${globalRandom()*360}, 80%, 70%)`;
-                landCtx.fillStyle = `hsl(${globalRandom()*360}, 40%, 30%)`;
-                landCtx.fillRect(x, y-2, 1, 2);
-                landCtx.fillStyle = color;
-                landCtx.fillRect(x-1, y-3, 3, 1);
-                landCtx.fillStyle = 'yellow';
-                landCtx.fillRect(x, y-3, 1, 1);
-            } else if (type < 0.4) {
-                landCtx.fillStyle = '#d1b48c';
-                landCtx.fillRect(x, y-3, 2, 3);
-                landCtx.fillStyle = '#e64c4c';
-                landCtx.fillRect(x-1, y-5, 4, 2);
-                landCtx.fillStyle = 'white';
-                landCtx.fillRect(x, y-4, 1, 1);
-            } else if (type < 0.6) {
-                landCtx.fillStyle = `rgb(100, 100, 100)`;
-                landCtx.fillRect(x, y-1, 3, 2);
-                landCtx.fillStyle = `rgb(120, 120, 120)`;
-                landCtx.fillRect(x+1, y-2, 2, 2);
+        const imageData = landCtx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+            if (data[i+3] > 0) {
+                const noise = (globalRandom() - 0.5) * 20;
+                data[i] = Math.max(0, Math.min(255, data[i] + noise));
+                data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise));
+                data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise));
             }
+        }
+        landCtx.putImageData(imageData, 0, 0);
+
+        const holeX = globalRandom() * (canvas.width - 400) + 200;
+        const holeY = landscapeHeightMap[Math.round(holeX)] + 2;
+        golfHole = {x: holeX, y: holeY, radius: 4};
+        landCtx.fillStyle = '#1a1a1a';
+        landCtx.beginPath();
+        landCtx.ellipse(holeX, holeY, golfHole.radius, golfHole.radius * 0.5, 0, 0, Math.PI * 2);
+        landCtx.fill();
+        landCtx.strokeStyle = '#cccccc';
+        landCtx.lineWidth = 1;
+        landCtx.beginPath();
+        landCtx.ellipse(holeX, holeY, golfHole.radius + 0.5, golfHole.radius * 0.5 + 0.25, 0, 0, Math.PI * 2);
+        landCtx.stroke();
+
+
+        sparkles = [];
+        for (let i = 0; i < 50; i++) {
+             const x = globalRandom() * canvas.width;
+             const y = landscapeHeightMap[Math.round(x)] + globalRandom() * (canvas.height - landscapeHeightMap[Math.round(x)]);
+             sparkles.push({ x, y, life: globalRandom() * 200, maxLife: 100 + globalRandom() * 100 });
         }
     }
 
@@ -481,6 +508,94 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 drawLeafMass(pixels, x + Math.cos(angle) * dist - 2, y + Math.sin(angle) * dist - 2, clusterZ + 2, clusterRadius * 0.7, palette.leaf[1], 1.2, random);
             }
         },
+        generateSaguaro: (pixels, x, y, palette, random) => {
+            const mainHeight = 70 + random() * 50;
+            const mainWidth = 6 + random() * 4;
+            const color1 = palette.leaf[0];
+            const color2 = palette.leaf[1];
+
+            const drawCactusColumn = (pxs, cx, cy, startZ, height, width, sway) => {
+                for (let z = startZ; z < startZ + height; z++) {
+                    for (let wx = -width/2; wx < width/2; wx++) {
+                        for (let wy = -width/2; wy < width/2; wy++) {
+                            if(wx*wx + wy*wy < (width/2)**2) {
+                                const rib = (Math.floor(wx*2) % 4 < 2) ? color1 : color2;
+                                pxs.push({ x: cx + wx, y: cy + wy, z, color: rib, sway: sway * (z/height) });
+                            }
+                        }
+                    }
+                }
+            };
+            
+            drawCactusColumn(pixels, x, y, 0, mainHeight, mainWidth, 0.2);
+
+            const numArms = 2 + Math.floor(random() * 2);
+            let lastDirection = random() < 0.5 ? 1 : -1;
+
+            for(let i = 0; i < numArms; i++) {
+                const armHeight = mainHeight * (0.3 + random() * 0.3);
+                const armStartZ = mainHeight * (0.35 + random() * 0.4);
+                const armWidth = mainWidth * (0.7 + random() * 0.1);
+                const direction = lastDirection;
+                lastDirection *= -1;
+                
+                const horizontalBend = armWidth + random() * 3;
+                
+                for(let h=0; h < horizontalBend; h++){
+                     const progress = h / horizontalBend;
+                     const curve = Math.sin(progress * Math.PI / 2);
+                     drawCactusColumn(pixels, x + (mainWidth/2 * direction) + (h * direction), y, armStartZ + curve * 10, 2, armWidth, 0.4);
+                }
+                drawCactusColumn(pixels, x + (mainWidth/2 * direction) + (horizontalBend * direction), y, armStartZ, armHeight, armWidth, 0.4);
+            }
+        },
+        generateSunflower: (pixels, x, y, palette, random) => {
+            const stemHeight = 60 + random() * 20;
+            const stemWidth = 2;
+
+            const baseGreen = rgbToHsl(30,110,30);
+            baseGreen.h += (random() - 0.5) * 0.08;
+            const stemPalette = { bark: [rgbToString(hslToRgb(baseGreen.h, 0.7, 0.3)), rgbToString(hslToRgb(baseGreen.h, 0.7, 0.4))] };
+            drawTrunk(pixels, x-stemWidth/2, y-stemWidth/2, 0, stemHeight, stemWidth, stemPalette);
+
+            drawLeafMass(pixels, x, y, stemHeight * 0.4, 10, stemPalette.bark[0], 0.5, random);
+            drawLeafMass(pixels, x, y, stemHeight * 0.6, 12, stemPalette.bark[1], 0.5, random);
+
+            const headZ = stemHeight + 5;
+            const headRadius = 8 + random() * 4;
+            const facingAngle = random() * Math.PI * 2;
+            
+            const numPetals = 12 + Math.floor(random() * 10);
+            for (let i = 0; i < numPetals; i++) {
+                const angle = facingAngle + (i / numPetals) * Math.PI * 2 + (random() - 0.5) * 0.2;
+                const petalLength = headRadius * (1.8 + random() * 0.8);
+                const petalWidth = headRadius * 0.8;
+                
+                for(let l=0; l < petalLength; l++) {
+                    const progress = l / petalLength;
+                    const currentWidth = Math.sin(progress * Math.PI) * petalWidth;
+                    for(let w = -currentWidth/2; w < currentWidth/2; w++) {
+                        const px = x + Math.cos(angle) * (headRadius + l) + Math.cos(angle + Math.PI/2) * w;
+                        const py = y + Math.sin(angle) * (headRadius + l) + Math.sin(angle + Math.PI/2) * w;
+                        const pz = headZ + Math.sin(progress * Math.PI) * 5;
+                        const colorIndex = Math.min(2, Math.floor(progress * 2.9));
+                        pixels.push({ x: px, y: py, z: pz, color: palette.leaf[colorIndex], sway: 1.5 });
+                    }
+                }
+            }
+
+            const centerColors = ['#5a3a22', '#4d311f', '#3b2518'];
+            for(let cx = -headRadius; cx <= headRadius; cx++) {
+                for(let cy = -headRadius; cy <= headRadius; cy++) {
+                    if(cx*cx + cy*cy <= headRadius*headRadius) {
+                        const d = Math.sqrt(cx*cx + cy*cy)/headRadius;
+                        const z = headZ + 2 + Math.cos(d * Math.PI/2)*4;
+                        const color = centerColors[Math.floor(random() * centerColors.length)];
+                        pixels.push({x: x + cx, y: y + cy, z, color, sway: 1});
+                    }
+                }
+            }
+        },
     };
     SPECIES.generateOak = SPECIES.generateWideSpreading;
     SPECIES.generateMaple = SPECIES.generateWideSpreading;
@@ -496,24 +611,15 @@ Simply add it as a browser source by copying the URL from the address bar after 
         generateLandscape();
         plantListDiv.addEventListener('click', onRemoveClick);
         generateBtn.addEventListener('click', addPlant);
+        meteorBtn.addEventListener('click', () => startEvent('meteor'));
+        lightningBtn.addEventListener('click', () => startEvent('lightning'));
+        fireBtn.addEventListener('click', () => startEvent('forestFire'));
+        golfBtn.addEventListener('click', () => startEvent('golf', 'golfers Name'));
         updatePlantListUI();
         animate(0);
     }
-    
-    function addPlant(thechattername, thehexvalue) { // **LINE CHANGED MUST UPDATE**
-        const name = thechattername; //nameInput.value || 'My Plant';  **LINE CHANGED MUST UPDATE**
-        const hex = thehexvalue; //colorPicker.value;  **LINE CHANGED MUST UPDATE**
-        const plantSeed = createSeed(name + hex + globalRandom());
-        const plantRandom = createSeededRandom(plantSeed);
-        
-        const pixels = [];
-        const palette = createPaletteFromHex(hex, plantRandom);
-        if (!palette) return;
-        
-        const speciesKeys = Object.keys(SPECIES);
-        const chosenSpeciesKey = speciesKeys[Math.floor(plantRandom() * speciesKeys.length)];
-        const generatorFn = SPECIES[chosenSpeciesKey];
-        
+
+    function findNewPlantPosition(plantName) {
         let screenX, screenY, textRect;
         let attempts = 0;
         const maxAttempts = 50;
@@ -523,8 +629,8 @@ Simply add it as a browser source by copying the URL from the address bar after 
             const landscapeBottomY = canvas.height;
             screenY = groundTopY + globalRandom() * (landscapeBottomY - groundTopY - 60);
 
-            ctx.font = 'bold 12px "Open Sans", sans-serif';
-            const textMetrics = ctx.measureText(name);
+            ctx.font = 'bold 14px "Open Sans", sans-serif';
+            const textMetrics = ctx.measureText(plantName);
             textRect = {
                 x: screenX - textMetrics.width / 2, y: screenY + 10,
                 width: textMetrics.width, height: 12
@@ -540,14 +646,32 @@ Simply add it as a browser source by copying the URL from the address bar after 
             if (!isOverlapping) break;
             attempts++;
         }
+        return { screenX, screenY, textRect };
+    }
+
+    function addPlant(thechattername, thehexvalue) { // **LINE CHANGED MUST UPDATE**
+        const name = thechattername; //nameInput.value || 'My Plant';  **LINE CHANGED MUST UPDATE**
+        const hex = thehexvalue; //colorPicker.value;  **LINE CHANGED MUST UPDATE**
+        const plantSeed = createSeed(name + hex + globalRandom());
+        const plantRandom = createSeededRandom(plantSeed);
+
+        const pixels = [];
+        const palette = createPaletteFromHex(hex, plantRandom);
+        if (!palette) return;
+
+        const speciesKeys = Object.keys(SPECIES);
+        const chosenSpeciesKey = speciesKeys[Math.floor(plantRandom() * speciesKeys.length)];
+        const generatorFn = SPECIES[chosenSpeciesKey];
+
+        const { screenX, screenY, textRect } = findNewPlantPosition(name);
 
         generatorFn(pixels, 0, 0, palette, plantRandom);
-        
+
         const id = `${Date.now()}-${name}`;
         const newPlant = {
-            id, name, status: 'growing', 
+            id, name, status: 'growing',
             pixels: [], allPixels: pixels,
-            spriteCanvas: null, spriteOffset: {x: 0, y: 0},
+            spriteCanvas: null, shadowCanvas: null, spriteOffset: {x: 0, y: 0},
             growIndex: 0,
             screenX, screenY, textRect,
             sway: 0.5 + plantRandom(), life: 0,
@@ -557,13 +681,16 @@ Simply add it as a browser source by copying the URL from the address bar after 
         labelRects.set(id, textRect);
         updatePlantListUI();
     }
-    
+
     function animate(time) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        updateTimeAndLighting(ctx, time);
+
+        updateTimeAndLighting(time);
 
         if (landscapeCanvas) ctx.drawImage(landscapeCanvas, 0, 0);
+
+        updateAndDrawSparkles();
+        updateAndDrawPuddles();
 
         if (globalRandom() < 0.0005 && weather.type === 'none') {
             const weatherOptions = ['rain', 'snow', 'windy'];
@@ -571,23 +698,32 @@ Simply add it as a browser source by copying the URL from the address bar after 
             startWeather(weatherOptions[Math.floor(globalRandom() * weatherOptions.length)]);
         }
         if (globalRandom() < 0.00005 && events.length === 0) startEvent('meteor');
-        if (globalRandom() < 0.001 && events.length === 0) startEvent('creature');
+        if (globalRandom() < 0.001 && activeCreatures.size < 2) startEvent('creature');
         if (globalRandom() < 0.008 && ambientLife.length < 15) startAmbientLife(time);
+        
+        const renderables = [...activePlants.values(), ...activeCreatures, ...events.filter(e => e.type === 'golfBall' || e.type === 'golfer' || e.type === 'holeInOne')];
+        renderables.sort((a, b) => (a.screenY + (a.z || 0)) - (b.screenY + (b.z || 0)));
 
-        const renderables = [...activePlants.values(), ...events.filter(e => e.type === 'creature')];
-        const sortedRenderables = renderables.sort((a, b) => a.screenY - b.screenY);
-
-        for (const item of sortedRenderables) {
-            if (item.type === 'creature') {
-                updateAndDrawCreature(item, ctx);
+        for (const item of renderables) {
+            ctx.save();
+            if(item.type === 'creature') {
+                updateAndDrawCreature(item, time);
+            } else if (item.type === 'golfBall') {
+                updateAndDrawGolfball(item);
+            } else if (item.type === 'golfer') {
+                updateAndDrawGolfer(item);
+            } else if (item.type === 'holeInOne') {
+                updateAndDrawHoleInOne(item);
             } else {
                 const plant = item;
                 updatePlantStatus(plant, time);
-                if (plant.status === 'destroyed') continue;
+                if (plant.status === 'destroyed') {
+                    ctx.restore();
+                    continue;
+                }
 
                 const swayOffset = Math.sin(time / 2500 + plant.screenX / 50) * plant.sway + (weather.type === 'windy' ? weather.intensity * 3 * Math.sin(time / 500 + plant.screenY / 50) : 0);
-                
-                ctx.save();
+                                
                 if (plant.status === 'falling' || plant.status === 'decaying') {
                     ctx.translate(plant.screenX + swayOffset, plant.screenY);
                     ctx.rotate(plant.rotation);
@@ -596,11 +732,25 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 if (plant.status === 'decaying') {
                     ctx.globalAlpha = Math.max(0, 1 - (plant.decayStartTime - plant.life) / 120);
                 }
-                
+
                 if (plant.spriteCanvas) {
                     const drawX = Math.round(plant.screenX + plant.spriteOffset.x + swayOffset);
                     const drawY = Math.round(plant.screenY + plant.spriteOffset.y);
-                    ctx.drawImage(plant.spriteCanvas, drawX, drawY);
+
+                    if (plant.status === 'burnt') {
+                        const alpha = Math.max(0, plant.life / 120);
+                        ctx.save();
+                        ctx.globalAlpha = alpha;
+                        ctx.drawImage(plant.spriteCanvas, drawX, drawY);
+                        ctx.globalCompositeOperation = 'source-atop';
+                        ctx.fillStyle = 'rgb(50, 50, 50)';
+                        ctx.shadowColor = 'rgb(50, 50, 50)';
+                        ctx.shadowBlur = 20;
+                        ctx.drawImage(plant.spriteCanvas, drawX, drawY);
+                        ctx.restore();
+                    } else {
+                         ctx.drawImage(plant.spriteCanvas, drawX, drawY);
+                    }
                 } else {
                     for (const pixel of plant.pixels) {
                         const screenPos = toScreen(pixel.x, pixel.y, pixel.z);
@@ -608,7 +758,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
                         ctx.fillRect(Math.round(plant.screenX + screenPos.x + swayOffset), Math.round(plant.screenY + screenPos.y), 1, 1);
                     }
                 }
-                
+
                 if (plant.snowAccumulation > 0 && plant.spriteCanvas) {
                     ctx.save();
                     ctx.globalAlpha = plant.snowAccumulation * 0.8;
@@ -621,18 +771,16 @@ Simply add it as a browser source by copying the URL from the address bar after 
                     ctx.restore();
                 }
                 if (plant.status === 'burning') {
-                    for(let i = 0; i< 10; i++){
+                    for(let i = 0; i < 30; i++){
                         ctx.fillStyle = `rgba(255, ${100 + globalRandom() * 100}, 0, ${globalRandom() * 0.5 + 0.3})`;
                         ctx.beginPath();
-                        ctx.arc(plant.screenX + swayOffset + (globalRandom() - 0.5) * 20, plant.screenY - plant.spriteCanvas.height/2 + (globalRandom() - 0.5) * 30, globalRandom() * 5, 0, Math.PI*2);
+                        ctx.arc(plant.screenX + swayOffset + (globalRandom() - 0.5) * 25, plant.screenY - (plant.spriteCanvas ? plant.spriteCanvas.height/2 : 20) + (globalRandom() - 0.5) * 40, globalRandom() * 15, 0, Math.PI*2);
                         ctx.fill();
                     }
                 }
                 
-                ctx.restore();
-                
-                if (plant.status !== 'falling' && plant.status !== 'decaying' && plant.status !== 'destroyed') {
-                    ctx.font = 'bold 12px "Open Sans", sans-serif';
+                if (plant.status !== 'falling' && plant.status !== 'decaying' && plant.status !== 'destroyed' && plant.status !== 'burnt') {
+                    ctx.font = 'bold 14px "Open Sans", sans-serif';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
                     ctx.fillText(plant.name, plant.screenX + swayOffset + 1, plant.screenY + 16 + 1);
@@ -640,15 +788,18 @@ Simply add it as a browser source by copying the URL from the address bar after 
                     ctx.fillText(plant.name, plant.screenX + swayOffset, plant.screenY + 15);
                 }
             }
+            ctx.restore();
         }
-        updateAndDrawClouds(ctx);
-        updateAndDrawPuddles(ctx);
-        updateAndDrawWeather(ctx);
-        updateAndDrawEvents(ctx);
-        updateAndDrawAmbientLife(ctx, time);
+        
+        updateAndDrawClouds();
+        updateAndDrawWeather();
+        updateAndDrawEvents(time);
+        updateAndDrawAmbientLife(time);
         requestAnimationFrame(animate);
     }
     
+    // ## 6. ALL OTHER FUNCTIONS ARE HERE, UNABRIDGED ##
+
     function updatePlantStatus(plant, time) {
         if (plant.status === 'growing') {
             const growAmount = Math.ceil(plant.allPixels.length / 180);
@@ -663,23 +814,26 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 const s = toScreen(p.x, p.y, p.z);
                 return { minX: Math.min(b.minX, s.x), maxX: Math.max(b.maxX, s.x), minY: Math.min(b.minY, s.y), maxY: Math.max(b.maxY, s.y) };
             }, { minX: Infinity, maxX: -Infinity, minY: Infinity, maxY: -Infinity });
-            
-            const spriteCanvas = document.createElement('canvas');
+
             const spriteW = Math.ceil(bounds.maxX - bounds.minX) + 2;
             const spriteH = Math.ceil(bounds.maxY - bounds.minY) + 2;
             if (spriteW > 0 && spriteH > 0) {
-                spriteCanvas.width = spriteW; spriteCanvas.height = spriteH;
-                const spriteCtx = spriteCanvas.getContext('2d');
+                plant.spriteCanvas = document.createElement('canvas');
+                plant.spriteCanvas.width = spriteW;
+                plant.spriteCanvas.height = spriteH;
+                const spriteCtx = plant.spriteCanvas.getContext('2d');
+                
                 plant.allPixels.forEach(p => {
                     const s = toScreen(p.x, p.y, p.z);
                     spriteCtx.fillStyle = p.color;
                     spriteCtx.fillRect(s.x - bounds.minX, s.y - bounds.minY, 1, 1);
                 });
-                plant.spriteCanvas = spriteCanvas;
+
                 plant.spriteOffset = {x: bounds.minX, y: bounds.minY};
             }
             plant.pixels = [];
             plant.status = 'idle';
+            updatePlantListUI();
         }
         if (plant.status === 'falling') {
             plant.rotation += 0.01;
@@ -705,9 +859,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
             plant.life--;
             if (plant.life <= 0) {
                 plant.status = 'destroyed';
-                if (!plant.isPermanentRemoval) {
-                    plant.regrowTime = time + 20 * 1000;
-                } else {
+                if (plant.isPermanentRemoval) {
                     activePlants.delete(plant.id);
                     labelRects.delete(plant.id);
                     updatePlantListUI();
@@ -717,13 +869,30 @@ Simply add it as a browser source by copying the URL from the address bar after 
         if (plant.status === 'burning') {
             plant.life--;
             if (plant.life <= 0) {
-                plant.status = 'destroyed';
-                plant.regrowTime = time + 6 * 60 * 1000;
+                plant.status = 'burnt';
+                plant.life = 120;
             }
         }
-        if (plant.status === 'destroyed' && plant.regrowTime > 0 && time > plant.regrowTime) {
-            plant.status = 'growing';
+        if (plant.status === 'burnt') {
+            plant.life--;
+            if (plant.life <= 0) {
+                plant.status = 'destroyed';
+                if (!plant.isPermanentRemoval) {
+                     plant.regrowTime = time + 60 * 1000;
+                }
+            }
+        }
+        if (plant.status === 'destroyed' && plant.regrowTime > 0 && time > plant.regrowTime && !plant.isPermanentRemoval) {
+            labelRects.delete(plant.id);
+            if (globalRandom() < 0.5) {
+                const { screenX, screenY, textRect } = findNewPlantPosition(plant.name);
+                plant.screenX = screenX;
+                plant.screenY = screenY;
+                plant.textRect = textRect;
+            }
+            labelRects.set(plant.id, plant.textRect);
 
+            plant.status = 'growing';
             plant.growIndex = 0;
             plant.rotation = 0;
             plant.snowAccumulation = 0;
@@ -733,22 +902,18 @@ Simply add it as a browser source by copying the URL from the address bar after 
             updatePlantListUI();
         }
     }
-    
+
     function onRemoveClick(e) {
         if (e.target.classList.contains('remove-btn')) {
             const id = e.target.dataset.id;
-			console.log(id);
             const plant = activePlants.get(id);
-            if (plant && (plant.status === 'idle' || plant.status === 'growing')) { 
+            if (plant && (plant.status === 'idle' || plant.status === 'growing')) {
                 plant.isPermanentRemoval = true;
                 plant.status = 'falling';
-                e.target.disabled = true;
-                e.target.closest('.plant-item').style.opacity = 0.5;
+                updatePlantListUI();
             }
         }
     }
-	
-	
 
     function startWeather(type) {
         if (weather.type !== 'none') return;
@@ -773,9 +938,10 @@ Simply add it as a browser source by copying the URL from the address bar after 
             rainCount++;
             for(let i=0; i < 5; i++) {
                 if(globalRandom() < 0.5) {
+                    const x = globalRandom() * canvas.width;
                     puddles.push({
-                        x: globalRandom() * canvas.width,
-                        y: landscapeHeightMap[Math.round(globalRandom() * canvas.width)] + globalRandom() * 30,
+                        x: x,
+                        y: landscapeHeightMap[Math.round(x)] + globalRandom() * 20,
                         radius: 20 + globalRandom() * 30,
                         life: 2000 + globalRandom() * 1000
                     });
@@ -784,7 +950,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
         }
     }
 
-    function updateAndDrawWeather(ctx) {
+    function updateAndDrawWeather() {
         if (weather.type === 'none' && weather.fade <= 0) return;
         if (weather.life <= 0) {
             weather.fade--;
@@ -804,15 +970,20 @@ Simply add it as a browser source by copying the URL from the address bar after 
         ctx.strokeStyle = `rgba(180, 200, 220, ${0.6 * fadeMultiplier})`;
         weather.particles.forEach(p => {
             p.x += p.vx * weather.intensity; p.y += p.vy;
+            const drawX = Math.round(p.x);
+            const drawY = Math.round(p.y);
             if (weather.type === 'snow') {
-                ctx.beginPath(); ctx.arc(p.x, p.y, globalRandom() * 1.5 + 1, 0, Math.PI * 2); ctx.fill();
+                ctx.beginPath(); ctx.arc(drawX, drawY, globalRandom() * 1.5 + 1, 0, Math.PI * 2); ctx.fill();
             } else if (weather.type === 'rain') {
-                ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y + 10); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(drawX, drawY); ctx.lineTo(drawX, drawY + 10); ctx.stroke();
             } else if (weather.type === 'windy') {
                 ctx.fillStyle = p.color;
-                ctx.fillRect(p.x, p.y, 5, 1);
+                ctx.fillRect(drawX, drawY, 5, 1);
             }
-            if (p.y > canvas.height || p.x > canvas.width) { p.y = globalRandom() * canvas.height; p.x = weather.type === 'windy' ? -10 : globalRandom() * canvas.width; }
+            if (p.y > canvas.height || p.x > canvas.width || p.x < 0) {
+                p.y = globalRandom() * -20;
+                p.x = weather.type === 'windy' ? -10 : globalRandom() * canvas.width;
+            }
         });
 
         activePlants.forEach(plant => {
@@ -823,25 +994,40 @@ Simply add it as a browser source by copying the URL from the address bar after 
             }
         });
     }
-    
+
     function startEvent(type) {
         if (type === 'meteor') {
             const targetX = globalRandom() * (canvas.width - 400) + 200;
             const targetY = landscapeHeightMap[Math.round(targetX)];
             const meteor = {
-                type, stage: 'falling', life: 300, 
-                x: targetX + 400, y: -100, 
-                vx: -2, vy: (targetY + 100) / 300, 
+                type, stage: 'falling', life: 300,
+                x: targetX + 400, y: -100,
+                vx: -2, vy: (targetY + 100) / 300,
                 targetX, targetY, trail: []
             };
             events.push(meteor);
         } else if (type === 'creature') {
-            const plantArray = [...activePlants.values()].filter(p => p.status === 'idle');
-            if (plantArray.length === 0) return;
-            const targetPlant = plantArray[Math.floor(globalRandom() * plantArray.length)];
-            const startSide = globalRandom() < 0.5 ? -20 : canvas.width + 20;
-            const creatureType = globalRandom() < 0.5 ? 'fox' : 'deer';
-            events.push({ type, creatureType, stage: 'walking', life: 10000, x: startSide, screenY: 0, target: targetPlant, speed: startSide < 0 ? 0.5 : -0.5 });
+            const startSide = globalRandom() < 0.5 ? -40 : canvas.width + 40;
+            const creatureTypes = ['fox', 'deer', 'rabbit', 'bear'];
+            const creatureType = creatureTypes[Math.floor(globalRandom() * creatureTypes.length)];
+            
+            const newCreature = {
+                id: Date.now(),
+                type: 'creature',
+                creatureType: creatureType,
+                x: startSide,
+                y: landscapeHeightMap[Math.round(startSide)] || (canvas.height - canvas.height / 4),
+                screenY: 0,
+                targetX: globalRandom() * (canvas.width - 200) + 100,
+                targetY: 0,
+                speed: (startSide < 0 ? 1 : -1) * (0.3 + globalRandom() * 0.4),
+                life: 3000 + globalRandom() * 2000,
+                state: 'roaming',
+                state_timer: 200 + globalRandom() * 200,
+                animation_timer: 0,
+            };
+            newCreature.targetY = landscapeHeightMap[Math.round(newCreature.targetX)] || newCreature.y;
+            activeCreatures.add(newCreature);
         } else if (type === 'aurora') {
             const aurora = { type, life: 1500, bands: [] };
             for(let i=0; i<3; i++) {
@@ -856,83 +1042,475 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 });
             }
             events.push(aurora);
+        } else if (type === 'lightning') {
+            const targetX = globalRandom() * (canvas.width - 400) + 200;
+            const targetPlant = [...activePlants.values()].find(p => p.status === 'idle' && Math.abs(p.screenX - targetX) < 20);
+            events.push({ type, life: 30, x: targetX, targetPlant });
+        } else if (type === 'forestFire') {
+            const plantArray = [...activePlants.values()].filter(p => p.status === 'idle');
+            if (plantArray.length > 0) {
+                const targetPlant = plantArray[Math.floor(globalRandom() * plantArray.length)];
+                targetPlant.status = 'burning';
+                targetPlant.life = 300 + globalRandom() * 120;
+            }
+        } else if (type === 'golf') {
+            const golferName = nameInput.value || 'Golfer';
+            const fromLeft = globalRandom() < 0.5;
+            const startX = fromLeft ? -50 : canvas.width + 50;
+            const targetX = fromLeft ? 150 + globalRandom() * 100 : canvas.width - (150 + globalRandom() * 100);
+            
+            events.push({
+                type: 'golfer',
+                id: Date.now(),
+                name: golferName,
+                shirtColor: `hsl(${globalRandom() * 360}, 70%, 60%)`,
+                stage: 'walking-in',
+                x: startX, y: 0, screenY: 0, targetX: targetX,
+                speed: fromLeft ? 1.5 : -1.5,
+                life: 10000,
+                animation_timer: 0,
+                ballStruck: false,
+            });
         }
     }
 
-    function updateAndDrawEvents(ctx) {
+    function updateAndDrawEvents(time) {
         events = events.filter(e => e.life > 0);
         events.forEach(e => {
             e.life--;
             if (e.type === 'meteor') {
-                if (e.stage === 'falling') {
-                    e.x += e.vx; e.y += e.vy;
-                    e.trail.push({x: e.x, y: e.y, life: 50});
-                    ctx.fillStyle = '#654321'; ctx.beginPath(); ctx.arc(e.x, e.y, 5, 0, Math.PI * 2); ctx.fill();
-                    ctx.fillStyle = 'orange'; ctx.beginPath(); ctx.arc(e.x, e.y, 4, 0, Math.PI * 2); ctx.fill();
-                    e.trail.forEach(t => {
-                        t.life--;
-                        ctx.fillStyle = `rgba(255, 180, 80, ${t.life/50})`;
-                        ctx.beginPath(); ctx.arc(t.x, t.y, 2, 0, Math.PI*2); ctx.fill();
-                    });
-                    e.trail = e.trail.filter(t => t.life > 0);
-                    if (e.y >= e.targetY) {
-                        e.stage = 'impact'; e.life = 60;
-                        landCtx.fillStyle = '#221a14'; landCtx.beginPath(); landCtx.arc(e.targetX, e.targetY + 5, 20, 0, Math.PI*2); landCtx.fill();
-                        activePlants.forEach(plant => {
-                            const dist = Math.hypot(plant.screenX - e.targetX, plant.screenY - e.targetY);
-                            if (dist < 30 && plant.status !== 'burning') { plant.status = 'burning'; plant.life = 180; }
-                        });
-                    }
-                } else if (e.stage === 'impact') {
-                    const progress = 1 - e.life / 60;
-                    ctx.fillStyle = `rgba(255, 200, 100, ${1 - progress})`; ctx.beginPath(); ctx.arc(e.targetX, e.targetY, progress * 40, 0, Math.PI*2); ctx.fill();
-                }
-            } else if (e.type === 'creature') {
-                e.screenY = landscapeHeightMap[Math.round(e.x)] || e.screenY;
-                if(e.stage === 'walking') {
-                    e.x += e.speed;
-                    const dist = Math.hypot(e.x - e.target.screenX, e.screenY - e.target.screenY);
-                    if (dist < 10) { e.stage = 'napping'; e.life = 1800; }
-                } else if (e.stage === 'napping' && e.life < 10) {
-                    e.stage = 'leaving';
-                } else if (e.stage === 'leaving') {
-                    e.x += e.speed;
-                }
+                updateAndDrawMeteor(e);
+            } else if (e.type === 'lightning') {
+                updateAndDrawLightning(e);
             } else if (e.type === 'aurora') {
-                e.bands.forEach(band => {
-                    ctx.beginPath();
-                    ctx.moveTo(band.points[0].x, band.y + band.points[0].y);
-                    for(let i=1; i < band.points.length - 2; i++) {
-                        const xc = (band.points[i].x + band.points[i+1].x) / 2;
-                        const yc = (band.y + band.points[i].y + band.y + band.points[i+1].y) / 2;
-                        ctx.quadraticCurveTo(band.points[i].x, band.y + band.points[i].y, xc, yc);
-                        band.points[i].y += band.points[i].speed;
-                        if(Math.abs(band.points[i].y) > 20) band.points[i].speed *= -1;
-                    }
-                    ctx.lineWidth = 20;
-                    ctx.strokeStyle = band.color;
-                    ctx.stroke();
-                });
+                updateAndDrawAurora(e);
+            } else if (e.type === 'golfer') {
+                updateAndDrawGolfer(e);
+            } else if (e.type === 'holeInOne') {
+                updateAndDrawHoleInOne(e);
             }
         });
     }
-    
-    function updateAndDrawCreature(creature, ctx) {
-        if (creature.creatureType === 'fox') {
-            ctx.fillStyle = '#D2691E'; // Orange
-            ctx.fillRect(creature.x - 5, creature.screenY - 7, 10, 4);
-            ctx.fillStyle = 'white';
-            ctx.fillRect(creature.x - 5, creature.screenY - 3, 3, 2);
-        } else { // Deer
-            ctx.fillStyle = '#8B4513';
-            ctx.fillRect(creature.x - 4, creature.screenY - 10, 8, 6);
-            ctx.fillStyle = '#A0522D';
-            ctx.fillRect(creature.x - 3, creature.screenY - 12, 4, 2);
+
+    function updateAndDrawMeteor(e) {
+        if (e.stage === 'falling') {
+            e.x += e.vx; e.y += e.vy;
+            e.trail.push({x: e.x, y: e.y, life: 50});
+            ctx.fillStyle = '#654321'; ctx.beginPath(); ctx.arc(e.x, e.y, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = 'orange'; ctx.beginPath(); ctx.arc(e.x, e.y, 4, 0, Math.PI * 2); ctx.fill();
+            e.trail.forEach(t => {
+                t.life--;
+                ctx.fillStyle = `rgba(255, 180, 80, ${t.life/50})`;
+                ctx.beginPath(); ctx.arc(t.x, t.y, 2, 0, Math.PI*2); ctx.fill();
+            });
+            e.trail = e.trail.filter(t => t.life > 0);
+            if (e.y >= e.targetY) {
+                e.stage = 'impact'; e.life = 60;
+                activePlants.forEach(plant => {
+                    const dist = Math.hypot(plant.screenX - e.targetX, plant.screenY - e.targetY);
+                    if (dist < 40 && plant.status === 'idle') {
+                        plant.status = 'burning';
+                        plant.life = 300 + globalRandom() * 120;
+                    }
+                });
+            }
+        } else if (e.stage === 'impact') {
+            if (e.life === 59) {
+                const palettes = [ { floor: '#221a14', rim: '#4a3a2a' }, { floor: '#3d3d3d', rim: '#555555' }, { floor: '#402E1D', rim: '#624A32' }, { floor: '#1a1a1a', rim: '#333333' } ];
+                const palette = palettes[Math.floor(globalRandom() * palettes.length)];
+                
+                const cx = e.targetX;
+                const cy = e.targetY + 5;
+                const baseRadius = 15 + globalRandom() * 10;
+                const complexity = 5 + globalRandom() * 5;
+                const jitter = 0.3 + globalRandom() * 0.4;
+                const phase1 = globalRandom() * 10;
+                const phase2 = globalRandom() * 10;
+                
+                const getLumpyRadius = (angle) => {
+                     const noise = (Math.sin(angle * complexity + phase1) + Math.cos(angle * (complexity/2) + phase2)) / 2;
+                     return baseRadius * (1 + noise * jitter);
+                };
+
+                const maxRadius = baseRadius * (1 + jitter) + 3;
+
+                for (let x = Math.floor(cx - maxRadius); x <= Math.ceil(cx + maxRadius); x++) {
+                    if (x < 0 || x >= landscapeHeightMap.length) continue;
+                    for (let y = Math.floor(cy - maxRadius); y <= Math.ceil(cy + maxRadius); y++) {
+                        if (y >= landscapeHeightMap[x]) {
+                            const angle = Math.atan2(y - cy, x - cx);
+                            const lumpyRadius = getLumpyRadius(angle);
+                            const lumpyRim = lumpyRadius + 2 + globalRandom();
+                            const distSq = (x - cx) ** 2 + (y - cy) ** 2;
+
+                            if (distSq <= lumpyRadius ** 2) {
+                                landCtx.fillStyle = palette.floor;
+                                landCtx.fillRect(x, y, 1, 1);
+                            } else if (distSq <= lumpyRim ** 2) {
+                                landCtx.fillStyle = palette.rim;
+                                landCtx.fillRect(x, y, 1, 1);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(0, canvas.height);
+            ctx.lineTo(0, landscapeHeightMap[0]);
+            for (let x = 1; x < canvas.width; x++) { if (landscapeHeightMap[x]) ctx.lineTo(x, landscapeHeightMap[x]); }
+            ctx.lineTo(canvas.width, canvas.height);
+            ctx.closePath();
+            ctx.clip();
+            
+            const progress = 1 - e.life / 60;
+            ctx.fillStyle = `rgba(255, 200, 100, ${1 - progress})`;
+            ctx.beginPath();
+            ctx.arc(e.targetX, e.targetY, progress * 40, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
         }
-        if (creature.stage !== 'napping') {
-            ctx.fillStyle = '#654321';
-            ctx.fillRect(creature.x - 3, creature.screenY - 2, 2, 2);
-            ctx.fillRect(creature.x + 1, creature.screenY - 2, 2, 2);
+    }
+
+    function updateAndDrawLightning(e) {
+        const flashOpacity = Math.sin((e.life / 30) * Math.PI);
+        if (flashOpacity > 0) {
+            ctx.save();
+            ctx.globalAlpha = flashOpacity;
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = 'lightblue';
+            ctx.shadowBlur = 20;
+            ctx.beginPath();
+            
+            let targetY = landscapeHeightMap[Math.round(e.x)] || canvas.height;
+            let targetX = e.x;
+            if (e.targetPlant && e.targetPlant.spriteCanvas) {
+                targetY = e.targetPlant.screenY + e.targetPlant.spriteOffset.y;
+                targetX = e.targetPlant.screenX + e.targetPlant.spriteOffset.x + e.targetPlant.spriteCanvas.width / 2;
+            }
+            
+            ctx.moveTo(targetX, 0);
+            let lx = targetX;
+            let ly = 0;
+            while (ly < targetY - 20) {
+                const nextX = lx + (globalRandom() - 0.5) * 40;
+                const nextY = ly + 20 + globalRandom() * 10;
+                ctx.lineTo(nextX, nextY);
+                lx = nextX;
+                ly = nextY;
+            }
+            ctx.lineTo(targetX, targetY);
+            ctx.stroke();
+            ctx.restore();
+        }
+        
+        if (e.life > 28 && e.targetPlant && e.targetPlant.status === 'idle') {
+            e.targetPlant.status = 'burning';
+            e.targetPlant.life = 300 + globalRandom() * 120;
+        }
+    }
+
+    function updateAndDrawAurora(e) {
+        e.bands.forEach(band => {
+            ctx.beginPath();
+            ctx.moveTo(band.points[0].x, band.y + band.points[0].y);
+            for(let i=1; i < band.points.length - 2; i++) {
+                const xc = (band.points[i].x + band.points[i+1].x) / 2;
+                const yc = (band.y + band.points[i].y + band.y + band.points[i+1].y) / 2;
+                ctx.quadraticCurveTo(band.points[i].x, band.y + band.points[i].y, xc, yc);
+                band.points[i].y += band.points[i].speed;
+                if(Math.abs(band.points[i].y) > 20) band.points[i].speed *= -1;
+            }
+            ctx.lineWidth = 20;
+            ctx.strokeStyle = band.color;
+            ctx.stroke();
+        });
+    }
+//
+    function updateAndDrawGolfer(golfer) {
+        // Update the golfer's ground position
+        golfer.screenY = landscapeHeightMap[Math.round(golfer.x)] || golfer.screenY;
+        golfer.animation_timer++;
+        
+        // State Machine for Golfer's Actions
+        if (golfer.stage === 'walking-in') {
+            golfer.x += golfer.speed;
+            if ((golfer.speed > 0 && golfer.x >= golfer.targetX) || (golfer.speed < 0 && golfer.x <= golfer.targetX)) {
+                golfer.stage = 'swinging';
+                golfer.animation_timer = 0;
+                golfer.ballStruck = false; 
+            }
+        } else if (golfer.stage === 'swinging') {
+            // Strike the ball at the midpoint of the swing animation
+            if (golfer.animation_timer === 20 && !golfer.ballStruck) {
+                golfer.ballStruck = true;
+                
+                const ballOriginX = golfer.x;
+                const ballOriginY = golfer.screenY - 5; // Start at the golfer's feet
+
+                // Aiming logic
+                const dx = golfHole.x - ballOriginX;
+                const dy = golfHole.y - ballOriginY;
+                const dist = Math.hypot(dx, dy);
+
+                // Simple arc physics calculation
+                const totalTime = dist / (4 + globalRandom() * 2); // Time to reach target horizontally
+                const vx = dx / totalTime;
+                const gravity = 0.1;
+                const vy = (dy - 0.5 * gravity * totalTime * totalTime) / totalTime; // Initial vertical velocity
+                
+                events.push({
+                    type: 'golfBall',
+                    golferName: golfer.name,
+                    x: ballOriginX,
+                    y: ballOriginY,
+                    vx: vx + (globalRandom() - 0.5) * 0.5, // Add inaccuracy
+                    vy: vy + (globalRandom() - 0.5) * 0.2,
+                    gravity: gravity,
+                    bounces: 0,
+                    state: 'in-flight',
+                    life: 1000,
+                    trail: []
+                });
+            }
+
+            if (golfer.animation_timer > 40) {
+                golfer.stage = 'watching';
+                golfer.animation_timer = 0; 
+            }
+        } else if (golfer.stage === 'watching') {
+            if (golfer.animation_timer > 180) { // Watch for 3 seconds
+                golfer.stage = 'walking-out';
+                golfer.speed *= -1;
+            }
+        } else if (golfer.stage === 'walking-out') {
+            golfer.x += golfer.speed;
+            if (golfer.x < -60 || golfer.x > canvas.width + 60) golfer.life = 0;
+        }
+        
+        // --- Drawing the Golfer ---
+        ctx.save();
+        ctx.translate(golfer.x, golfer.screenY);
+        ctx.scale(Math.sign(golfer.speed), 1); // Face the correct direction
+        let frame = 'idle';
+        if(golfer.stage === 'swinging') frame = 'swing';
+        
+        ctx.fillStyle = golfer.shirtColor; ctx.fillRect(-3, -25, 8, 12);
+        ctx.fillStyle = '#ffdbac'; ctx.fillRect(-2, -31, 6, 6);
+        ctx.fillStyle = '#555'; ctx.fillRect(-3, -13, 4, 13); ctx.fillRect(2, -13, 4, 13);
+        
+        ctx.save();
+        ctx.translate(2, -22);
+        if (frame === 'swing') {
+            const swingProgress = Math.sin((golfer.animation_timer / 40) * Math.PI);
+            ctx.rotate(swingProgress * 2 - 1);
+        }
+        ctx.fillStyle = '#ffdbac'; ctx.fillRect(0, 0, 2, 8);
+        ctx.fillStyle = '#aaa'; ctx.fillRect(0, 8, 2, 18);
+        ctx.fillStyle = '#888'; ctx.fillRect(-2, 26, 6, 3);
+        ctx.restore();
+        
+        ctx.font = 'bold 12px "Open Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillText(golfer.name, 1, -38);
+        ctx.fillStyle = 'white';
+        ctx.fillText(golfer.name, 0, -39);
+
+        ctx.restore();
+    }
+
+    function updateAndDrawGolfball(ball) {
+        if (ball.state === 'in-flight' || ball.state === 'rolling') {
+            ball.vy += ball.gravity;
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+            ball.screenY = ball.y; // Update for sorting
+        }
+
+        ball.trail.push({x: ball.x, y: ball.y, life: 20});
+        ball.trail.forEach(t => t.life--);
+        ball.trail = ball.trail.filter(t => t.life > 0);
+
+        const groundY = landscapeHeightMap[Math.round(ball.x)] || canvas.height * 2;
+        
+        if (ball.y >= groundY && ball.vy > 0) {
+            ball.y = groundY;
+            if (ball.bounces < 2 && Math.abs(ball.vy) > 1) {
+                ball.vy *= -0.4;
+                ball.vx *= 0.7;
+                ball.bounces++;
+            } else {
+                ball.state = 'rolling';
+                ball.vy = 0;
+                ball.vx *= 0.95;
+            }
+        }
+        
+        if(ball.vy > -2) { // Only check for collisions when it's near the apex or falling
+            for(const plant of activePlants.values()){
+                if(plant.spriteCanvas && plant.status === 'idle'){
+                    const dist = Math.hypot(ball.x - plant.screenX, ball.y - (plant.screenY - plant.spriteCanvas.height / 2));
+                    if(dist < plant.spriteCanvas.width / 2) {
+                        ball.vx *= -0.5 + (globalRandom() - 0.5) * 0.4;
+                        ball.vy *= 0.5;
+                        ball.bounces++; // A hit counts as a bounce
+                    }
+                }
+            }
+        }
+        
+        if(ball.state === 'rolling') {
+             for(const p of puddles) {
+                const dist = Math.hypot(ball.x - p.x, ball.y - p.y);
+                if (dist < p.radius) {
+                    ball.vx *= 0.1;
+                }
+             }
+        }
+
+        // --- Drawing ---
+        ball.trail.forEach(t => {
+            ctx.fillStyle = `rgba(255,255,255,${t.life / 40})`;
+            ctx.fillRect(t.x, t.y, 1, 1);
+        });
+        
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, 2, 0, Math.PI*2);
+        ctx.fill();
+
+        // --- Hole In One & Despawn Logic ---
+        const distToHole = Math.hypot(ball.x - golfHole.x, ball.y - golfHole.y);
+        if (distToHole < golfHole.radius && ball.state === 'rolling' && Math.abs(ball.vx) < 0.5) {
+            ball.life = 0;
+            events.push({type: 'holeInOne', name: ball.golferName, life: 240, x: golfHole.x, y: golfHole.y, particles: []});
+        }
+
+        if (ball.state === 'rolling' && Math.abs(ball.vx) < 0.01) {
+            ball.life = 0; // Despawn if stopped
+        }
+    }
+//
+    function updateAndDrawHoleInOne(e) {
+        if(e.life === 239) {
+            for(let i=0; i < 50; i++) {
+                const angle = globalRandom() * Math.PI * 2;
+                const speed = globalRandom() * 3 + 1;
+                e.particles.push({
+                    x: e.x, y: e.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 2,
+                    life: 60 + globalRandom() * 30,
+                    color: `hsl(${globalRandom()*360}, 100%, 70%)`
+                });
+            }
+        }
+
+        e.particles.forEach(p => {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.05;
+            p.life--;
+            ctx.globalAlpha = p.life / 60;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, 2, 2);
+        });
+        e.particles = e.particles.filter(p => p.life > 0);
+        
+        const progress = 1 - (e.life / 240);
+        const scale = Math.sin(progress * Math.PI) * 2;
+        const alpha = Math.sin(progress * Math.PI);
+        const message = `${e.name} got a Hole in ONE!`;
+        
+        ctx.save();
+        ctx.translate(canvas.width/2, canvas.height/2);
+        ctx.scale(scale, scale);
+        ctx.globalAlpha = alpha;
+        ctx.font = 'bold 30px "Open Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = 'black';
+        ctx.fillText(message, 2, 2);
+        ctx.fillStyle = 'white';
+        ctx.fillText(message, 0, 0);
+        ctx.restore();
+		setTimeout(() => {
+			window.location.reload();
+		}, 6000); // A 6 second delay
+    }
+
+    function updateAndDrawCreature(creature, time) {
+        creature.state_timer--;
+        creature.animation_timer++;
+        creature.life--;
+
+        if (creature.life <= 200 && creature.state !== 'leaving') {
+            creature.state = 'leaving';
+            creature.targetX = creature.x > canvas.width / 2 ? canvas.width + 50 : -50;
+            creature.speed = (creature.x < creature.targetX ? 1 : -1) * (0.3 + globalRandom() * 0.4);
+        }
+        
+        if (creature.state === 'roaming' || creature.state === 'leaving') {
+             creature.x += creature.speed;
+             const roundedX = Math.round(creature.x);
+             if(roundedX >= 0 && roundedX < canvas.width) {
+                 creature.screenY = landscapeHeightMap[roundedX];
+             } else {
+                 creature.screenY = canvas.height * 2;
+             }
+             if((creature.state_timer <= 0 || Math.abs(creature.x - creature.targetX) < 5) && creature.state !== 'leaving') {
+                creature.state = 'idle';
+                creature.state_timer = 100 + globalRandom() * 200;
+             }
+        } else if (creature.state === 'idle') {
+            if(creature.state_timer <= 0) {
+                creature.state = 'roaming';
+                creature.state_timer = 200 + globalRandom() * 200;
+                creature.targetX = globalRandom() * (canvas.width - 200) + 100;
+                creature.speed = (creature.x < creature.targetX ? 1 : -1) * (0.3 + globalRandom() * 0.4);
+            }
+        }
+        
+        if (creature.x < -50 || creature.x > canvas.width + 50) {
+            activeCreatures.delete(creature);
+            return;
+
+        }
+
+        const bob = Math.sin(creature.animation_timer * 0.2) * (creature.state !== 'idle' ? 1.5 : 0);
+        ctx.translate(creature.x, creature.screenY + bob);
+        ctx.scale(creature.speed > 0 ? 1 : -1, 1);
+
+        if (creature.creatureType === 'fox') {
+            ctx.fillStyle = '#C06014'; ctx.fillRect(0, -8, 8, 4);
+            ctx.fillStyle = '#333'; ctx.fillRect(1, -4, 2, 3); ctx.fillRect(5, -4, 2, 3);
+            ctx.fillStyle = 'white'; ctx.fillRect(7, -8, 3, 2);
+            ctx.fillStyle = '#333'; ctx.fillRect(9, -8, 1, 1); ctx.fillRect(6, -9, 1, 1);
+            ctx.fillRect(3, -11, 2, 2);
+            ctx.fillStyle = '#C06014'; ctx.fillRect(-6, -8, 6, 2);
+            ctx.fillStyle = 'white'; ctx.fillRect(-8, -8, 2, 2);
+        } else if (creature.creatureType === 'deer') {
+            ctx.fillStyle = '#8B5A2B'; ctx.fillRect(0, -12, 10, 6);
+            ctx.fillStyle = '#654321'; ctx.fillRect(1, -6, 2, 6); ctx.fillRect(7, -6, 2, 6);
+            ctx.fillStyle = '#A0522D'; ctx.fillRect(9, -15, 4, 3);
+            ctx.fillStyle = '#333'; ctx.fillRect(12, -15, 1, 1); ctx.fillRect(10, -16, 1, 1);
+            ctx.fillStyle = '#654321'; ctx.fillRect(8, -19, 1, 3); ctx.fillRect(6, -21, 1, 3);
+        } else if (creature.creatureType === 'rabbit') {
+            ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 4);
+            ctx.fillStyle = 'white'; ctx.fillRect(4, -6, 3, 3);
+            ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+            ctx.fillStyle = 'white'; ctx.fillRect(3, -9, 1, 3);
+            ctx.fillRect(5, -9, 1, 3);
+        } else if (creature.creatureType === 'bear') {
+            ctx.fillStyle = '#5C4033'; ctx.fillRect(0, -10, 12, 8);
+            ctx.fillStyle = '#3D2B1F'; ctx.fillRect(1, -2, 4, 3); ctx.fillRect(7, -2, 4, 3);
+            ctx.fillStyle = '#5C4033'; ctx.fillRect(10, -13, 5, 4);
+            ctx.fillStyle = '#3D2B1F'; ctx.fillRect(14, -12, 1, 1);
+            ctx.fillRect(11, -14, 1, 1);
+            ctx.fillRect(9, -15, 2, 2);
         }
     }
 
@@ -946,20 +1524,22 @@ Simply add it as a browser source by copying the URL from the address bar after 
         }
     }
 
-    function updateAndDrawAmbientLife(ctx, time) {
+    function updateAndDrawAmbientLife(time) {
         ambientLife = ambientLife.filter(a => a.life > 0);
         ambientLife.forEach(a => {
             a.life--; a.x += a.vx; a.y += a.vy;
+            const drawX = Math.round(a.x);
+            const drawY = Math.round(a.y);
             if (a.type === 'bird') {
                 const wingY = Math.sin(time / 100) * 3;
-                ctx.strokeStyle = '#333'; ctx.beginPath(); ctx.moveTo(a.x - 3, a.y + wingY); ctx.lineTo(a.x, a.y); ctx.lineTo(a.x + 3, a.y + wingY); ctx.stroke();
+                ctx.strokeStyle = '#333'; ctx.beginPath(); ctx.moveTo(drawX - 3, drawY + wingY); ctx.lineTo(drawX, drawY); ctx.lineTo(drawX + 3, drawY + wingY); ctx.stroke();
             } else if (a.type === 'firefly') {
                 ctx.fillStyle = `rgba(220, 255, 180, ${Math.sin(time/200 + a.x) * 0.5 + 0.5})`;
-                ctx.beginPath(); ctx.arc(a.x, a.y, 2, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(drawX, drawY, 2, 0, Math.PI*2); ctx.fill();
             } else if (a.type === 'leaf') {
                 a.rotation += a.rotSpeed;
                 ctx.save();
-                ctx.translate(a.x, a.y);
+                ctx.translate(drawX, drawY);
                 ctx.rotate(a.rotation);
                 ctx.fillStyle = `rgba(100, 50, 20, ${a.life / 200})`;
                 ctx.fillRect(-2, -1, 4, 2);
@@ -985,7 +1565,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
             }
         });
     }
-    
+
     function updatePlantListUI() {
         plantListDiv.innerHTML = '';
         if (activePlants.size === 0) {
@@ -1006,111 +1586,116 @@ Simply add it as a browser source by copying the URL from the address bar after 
         }
     }
 
-    function updateTimeAndLighting(ctx, time) {
+    function updateTimeAndLighting(time) {
         timeOfDay = (time / 600000) % 1;
-        const dayProgress = Math.sin(timeOfDay * Math.PI);
-        
-        const topDay = [135, 206, 235], bottomDay = [200, 220, 240];
-        const topDusk = [45, 50, 80], bottomDusk = [255, 150, 80];
-        const topNight = [5, 5, 20], bottomNight = [20, 30, 50];
-        
-        let topColor, bottomColor;
-        if (dayProgress < 0.3) {
-            const nightProgress = 1 - (dayProgress / 0.3);
-            topColor = lerpColor(topDusk, topNight, nightProgress);
-            bottomColor = lerpColor(bottomDusk, bottomNight, nightProgress);
-            if (globalRandom() < 0.0001 && events.length === 0) startEvent('aurora');
-        } else if (dayProgress < 0.5) {
-            const sunriseProgress = (dayProgress - 0.3) / 0.2;
-            topColor = lerpColor(topDusk, topDay, sunriseProgress);
-            bottomColor = lerpColor(bottomDusk, bottomDay, sunriseProgress);
-        } else if (dayProgress < 0.8) {
-            topColor = topDay; bottomColor = bottomDay;
-        } else {
-            const sunsetProgress = (dayProgress - 0.8) / 0.2;
-            topColor = lerpColor(topDay, topDusk, sunsetProgress);
-            bottomColor = lerpColor(bottomDay, bottomDusk, sunsetProgress);
-        }
-        
-        const skyGradient = ctx.createLinearGradient(0, 0, 0, canvas.height * 0.8);
-        skyGradient.addColorStop(0, `rgb(${topColor[0]},${topColor[1]},${topColor[2]})`);
-        skyGradient.addColorStop(1, `rgb(${bottomColor[0]},${bottomColor[1]},${bottomColor[2]})`);
-        ctx.fillStyle = skyGradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
         let overlayColor = 'rgba(0,0,0,0)';
-        if ((dayProgress > 0.2 && dayProgress < 0.4) || (dayProgress > 0.8 && dayProgress < 1.0)) {
-            const goldProgress = dayProgress < 0.5 ? (dayProgress - 0.2)/0.2 : (1.0 - dayProgress)/0.2;
-            overlayColor = `rgba(255, 165, 0, ${0.15 * goldProgress})`;
-        } else if (dayProgress < 0.2) {
-             overlayColor = `rgba(10, 20, 40, ${0.6 * (1-dayProgress/0.2)})`;
+        if (timeOfDay > 0.5) { 
+             const nightProgress = (timeOfDay - 0.5) * 2;
+             overlayColor = `rgba(10, 20, 40, ${0.4 * Math.sin(nightProgress * Math.PI)})`;
+        } else {
+            const goldProgress = Math.sin(timeOfDay * 2 * Math.PI);
+            overlayColor = `rgba(255, 185, 30, ${0.10 * goldProgress})`;
         }
-        
+
         ctx.fillStyle = overlayColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         seasonTimer++;
-        if (seasonTimer > 30000) {
+        if (seasonTimer > 180000) {
             seasonTimer = 0;
             const currentIdx = seasons.indexOf(currentSeason);
             currentSeason = seasons[(currentIdx + 1) % seasons.length];
         }
     }
-    
-    function updateAndDrawClouds(ctx) {
-        if(globalRandom() < 0.005 && clouds.length < 10) {
-            const puffs = Array.from({length: 3 + Math.floor(globalRandom() * 5)}, () => ({
-                dx: (globalRandom() - 0.5) * 80, dy: (globalRandom() - 0.5) * 20,
-                r: 20 + globalRandom() * 20
+
+    function updateAndDrawSparkles() {
+        sparkles.forEach(s => {
+            s.life--;
+            if(s.life <= 0) {
+                 s.x = globalRandom() * canvas.width;
+                 const roundedX = Math.round(s.x);
+                 if (roundedX >= 0 && roundedX < canvas.width) {
+                    s.y = landscapeHeightMap[roundedX] + globalRandom() * (canvas.height - landscapeHeightMap[roundedX]);
+                 }
+                 s.life = s.maxLife;
+            }
+            const alpha = Math.sin((1 - s.life / s.maxLife) * Math.PI) * 0.5;
+            ctx.fillStyle = `rgba(255, 255, 220, ${alpha})`;
+            ctx.fillRect(s.x, s.y, 1, 1);
+        });
+    }
+
+    function updateAndDrawClouds() {
+        if(globalRandom() < 0.01 && clouds.length < 15) {
+            const puffs = Array.from({length: 5 + Math.floor(globalRandom() * 8)}, () => ({
+                dx: (globalRandom() - 0.5) * 120, dy: (globalRandom() - 0.5) * 30,
+                r: 30 + globalRandom() * 30
             }));
-            clouds.push({ x: -200, y: globalRandom() * canvas.height / 3, speed: 0.2 + globalRandom() * 0.3, puffs });
+            clouds.push({ x: -250, y: globalRandom() * canvas.height / 3, speed: 0.2 + globalRandom() * 0.3, puffs, life: 1 });
         }
-        clouds = clouds.filter(c => c.x < canvas.width + 200);
+        clouds = clouds.filter(c => c.x < canvas.width + 250);
         clouds.forEach(c => {
             c.x += c.speed;
             ctx.save();
-            ctx.fillStyle = `rgba(255, 255, 255, ${0.1 * Math.sin(timeOfDay * Math.PI)})`;
-            ctx.shadowColor = 'white';
-            ctx.shadowBlur = 30;
+            const dayFactor = Math.sin(timeOfDay * Math.PI);
+            ctx.fillStyle = `rgba(255, 255, 255, ${0.1 * dayFactor})`;
+            ctx.shadowColor = `rgba(255, 255, 255, ${dayFactor * 0.5})`;
+            ctx.shadowBlur = 40;
             c.puffs.forEach(p => {
                 ctx.beginPath();
-                ctx.arc(c.x + p.dx, c.y + p.dy, p.r, 0, Math.PI * 2);
+                ctx.ellipse(c.x + p.dx, c.y + p.dy, p.r, p.r * 0.7, 0, 0, Math.PI * 2);
                 ctx.fill();
             });
             ctx.restore();
         });
     }
 
-    function updateAndDrawPuddles(ctx) {
+    function updateAndDrawPuddles() {
         puddles = puddles.filter(p => p.life > 0);
+        if (puddles.length === 0) return;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height);
+        ctx.lineTo(0, landscapeHeightMap[0]);
+        for (let x = 1; x < canvas.width; x++) { if (landscapeHeightMap[x]) ctx.lineTo(x, landscapeHeightMap[x]); }
+        ctx.lineTo(canvas.width, canvas.height);
+        ctx.closePath();
+        ctx.clip();
+
         puddles.forEach(p => {
             p.life--;
             if (weather.type !== 'rain') p.radius *= 0.999;
+            ctx.save();
             ctx.globalAlpha = Math.min(1, p.life / 200) * 0.7;
             ctx.fillStyle = '#5a6a7a';
+            ctx.shadowColor = '#5a6a7a';
+            ctx.shadowBlur = 15;
             ctx.beginPath();
             ctx.ellipse(p.x, p.y, p.radius, p.radius*0.5, 0, 0, Math.PI*2);
             ctx.fill();
-            
-            // Reflection
+            ctx.restore();
+
             ctx.save();
+            ctx.globalAlpha = Math.min(1, p.life / 200) * 0.5;
+            ctx.beginPath();
+            ctx.ellipse(p.x, p.y, p.radius, p.radius*0.5, 0, 0, Math.PI*2);
             ctx.clip();
             ctx.translate(p.x, p.y + p.radius*0.5);
             ctx.scale(1, -0.5);
             ctx.drawImage(canvas, -p.x, -p.y - p.radius*0.5);
             ctx.restore();
-            
-            ctx.globalAlpha = 1;
         });
+
+        ctx.restore();
     }
-    
-    // ## 8. UTILITY FUNCTION DEFINITIONS ##
+
+    // ## 8. UTILITY FUNCTION DEFINITIONS ## 
     function setupCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; ctx.imageSmoothingEnabled = false; }
     function hexToRgb(hex) { const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex); return r ? { r: parseInt(r[1], 16), g: parseInt(r[2], 16), b: parseInt(r[3], 16) } : null; }
     function rgbToHsl(r, g, b) { r /= 255; g /= 255; b /= 255; const max = Math.max(r, g, b), min = Math.min(r, g, b); let h = 0, s = 0, l = (max + min) / 2; if (max !== min) { const d = max - min; s = l > 0.5 ? d / (2 - max - min) : d / (max + min); switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; case b: h = (r - g) / d + 4; break; } h /= 6; } return { h, s, l }; }
     function hslToRgb(h, s, l) { let r, g, b; if (s === 0) { r = g = b = l; } else { const hue2rgb = (p, q, t) => { if (t < 0) t += 1; if (t > 1) t -= 1; if (t < 1 / 6) return p + (q - p) * 6 * t; if (t < 1 / 2) return q; if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6; return p; }; const q = l < 0.5 ? l * (1 + s) : l + s - l * s; const p = 2 * l - q; r = hue2rgb(p, q, h + 1 / 3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1 / 3); } return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) }; };
     function rgbToString(rgb) { return `rgb(${rgb.r},${rgb.g},${rgb.b})`; }
-    function lerpColor(c1, c2, factor) { return [ c1[0] + (c2[0] - c1[0]) * factor, c1[1] + (c2[1] - c1[1]) * factor, c1[2] + (c2[2] - c1[2]) * factor ]; }
     
     initialize();
     </script>

@@ -24,6 +24,32 @@ canvas {
     z-index: -1;
 }
 
+.controls-extra {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+}
+
+.controls-extra button {
+    background-color: var(--ui-bg);
+    border: 1px solid var(--ui-border);
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.controls-extra button:hover {
+    background-color: var(--ui-border);
+    color: var(--text-primary);
+}
+
 /* All other UI styling remains the same */
 .controls { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--ui-bg); padding: 1rem; border-radius: 12px; border: 1px solid var(--ui-border); box-shadow: 0 8px 32px rgba(0,0,0,0.4); display: flex; gap: 1rem; align-items: center; z-index: 10; }
 input[type="text"] { padding: 0.75rem; border: 1px solid var(--ui-border); border-radius: 8px; background-color: #1c2128; color: var(--text-primary); width: 150px; }
