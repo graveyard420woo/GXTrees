@@ -145,7 +145,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
 							if(`${message.text}` == '!lightningstorm'){
 							for (let i = 0; i < 15; i++) {
 							  setTimeout(() => {
-								startEvent('meteor');
+								startEvent('lightning');
 							  }, 300 * i); 
 							 }
 							}
@@ -160,11 +160,11 @@ Simply add it as a browser source by copying the URL from the address bar after 
 							for (let i = 0; i < 50; i++) {
 							  setTimeout(() => {
 								startEvent('meteor');
-							  }, 100 * i); 
+							  }, 200 * i); 
 							 }
 							}
 							if(`${message.text}` == '!winter'){
-							for (let i = 0; i < 100; i++) {
+							for (let i = 0; i < 50; i++) {
 							  setTimeout(() => {
 								startEvent('golf', 'winter #'+i+1);
 							  }, 300 * i); 
@@ -174,13 +174,20 @@ Simply add it as a browser source by copying the URL from the address bar after 
 							for (let i = 0; i < 30; i++) {
 							  setTimeout(() => {
 								startEvent('lightning');
-							  }, 100 * i); 
+							  }, 300 * i); 
 							 }
 							}
 							if(`${message.text}` == '!sandals'){
 							for (let i = 0; i < 50; i++) {
 							  setTimeout(() => {
 								startEvent('golf', 'sandals #'+i+1);
+							  }, 300 * i); 
+							 }
+							}
+							if(`${message.text}` == '!golfparty'){
+							for (let i = 0; i < 69; i++) {
+							  setTimeout(() => {
+								startEvent('golf', `${chatter_user_name}`+' #'+i+1);
 							  }, 300 * i); 
 							 }
 							}
