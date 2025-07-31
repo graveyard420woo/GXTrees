@@ -995,7 +995,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
         });
     }
 
-    function startEvent(type) {
+    function startEvent(type, golfyName) {
         if (type === 'meteor') {
             const targetX = globalRandom() * (canvas.width - 400) + 200;
             const targetY = landscapeHeightMap[Math.round(targetX)];
@@ -1054,7 +1054,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 targetPlant.life = 300 + globalRandom() * 120;
             }
         } else if (type === 'golf') {
-            const golferName = nameInput.value || 'Golfer';
+            const golferName = golfyName || 'Golfer';
             const fromLeft = globalRandom() < 0.5;
             const startX = fromLeft ? -50 : canvas.width + 50;
             const targetX = fromLeft ? 150 + globalRandom() * 100 : canvas.width - (150 + globalRandom() * 100);
