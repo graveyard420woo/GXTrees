@@ -66,7 +66,11 @@ Simply add it as a browser source by copying the URL from the address bar after 
         var session_id = '';
         var my_user_id = '';
 		var chattersColor = '';
-		let previousChatters = [];		
+		let previousChatters = [];	
+		
+		document.getElementById("plant-list-container").style.display = "none";
+		document.getElementById("ui-container").style.display = "none";
+		document.getElementById("extracontrols").style.display = "none";	
 										
 		document.getElementById('authorize').setAttribute('href', 'https://id.twitch.tv/oauth2/authorize?client_id=' + client_id + '&redirect_uri=' + encodeURIComponent(redirect) + '&response_type=token&scope=moderator:read:chatters+moderator:read:followers+user:read:chat');
 
