@@ -1497,6 +1497,45 @@
 			ctx.lineTo(canvas.width, canvas.height);
 			ctx.closePath();
 			ctx.clip();
+			
+			// --- UPDATED SECTION FOR FADING METEOR ---
+			const fadeDuration = 15; // UPDATED: The number of frames over which the meteor fades out.
+			const startLife = 60;    // UPDATED: The life value when the impact and fade begin.
+	
+			// UPDATED: Only draw the meteor if it's within the fade-out duration.
+			if (e.life > startLife - fadeDuration) { 
+				// UPDATED: Calculate the opacity from 1 down to 0 based on how much time has passed.
+				const opacity = Math.max(0, (e.life - (startLife - fadeDuration)) / fadeDuration);
+	
+				ctx.save();
+				ctx.globalAlpha = opacity; // UPDATED: Apply the fade-out opacity.
+	
+				// UPDATED: Draw the meteor one last time at its impact point.
+				ctx.translate(e.x, e.y); 
+				ctx.rotate(e.rotation);
+	
+				const glowRadius = e.size * 3.5;
+				const glowGradient = ctx.createRadialGradient(0, 0, e.size * 0.8, 0, 0, glowRadius);
+				glowGradient.addColorStop(0, e.colors.glow);
+				glowGradient.addColorStop(1, 'transparent');
+				ctx.fillStyle = glowGradient;
+				ctx.fillRect(-glowRadius, -glowRadius, glowRadius * 2, glowRadius * 2);
+	
+				ctx.fillStyle = e.colors.core;
+				ctx.strokeStyle = '#1a1a1a';
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.moveTo(e.shapePoints[0].x, e.shapePoints[0].y);
+				for (let i = 1; i < e.shapePoints.length; i++) {
+					ctx.lineTo(e.shapePoints[i].x, e.shapePoints[i].y);
+				}
+				ctx.closePath();
+				ctx.fill();
+				ctx.stroke();
+				
+				ctx.restore(); // UPDATED: Restore the context, removing the globalAlpha change.
+			}
+			// --- END OF UPDATED SECTION ---
 	
 			const progress = 1 - e.life / 60;
 			ctx.fillStyle = `rgba(255, 200, 100, ${1 - progress})`;
