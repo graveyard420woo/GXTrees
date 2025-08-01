@@ -697,7 +697,7 @@
             const landscapeBottomY = canvas.height;
             screenY = groundTopY + globalRandom() * (landscapeBottomY - groundTopY - 60);
 
-            ctx.font = '16px "Tiny5", sans-serif';
+            ctx.font = '26px "Tiny5", sans-serif';
             const textMetrics = ctx.measureText(plantName);
             textRect = {
                 x: screenX - textMetrics.width / 2, y: screenY + 10,
@@ -848,7 +848,7 @@
                 }
                 
                 if (plant.status !== 'falling' && plant.status !== 'decaying' && plant.status !== 'destroyed' && plant.status !== 'burnt') {
-                    ctx.font = '16px "Tiny5", sans-serif';
+                    ctx.font = '26px "Tiny5", sans-serif';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
                     ctx.fillText(plant.name, plant.screenX + swayOffset + 1, plant.screenY + 16 + 1);
