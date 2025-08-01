@@ -121,6 +121,7 @@ h3 { margin-top: 0.5rem; text-align: center; border-bottom: 1px solid var(--ui-b
 
 .visible-fade {
   opacity: 1;
+  transition: opacity 1s ease-in-out;
 }
 	  
 * {
@@ -240,7 +241,7 @@ input[type="button"], button {
     color: #fff;
     margin-left: 17px;
     margin-right: 11px;
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 300;
 }
 
@@ -248,7 +249,7 @@ input[type="button"], button {
 #twitch-text{
     color: #fff;
     margin-left: 7px;
-    margin-right: 11px;
+    margin-right: 2px;
     font-size: 18px;
     font-weight: 300;
 }
