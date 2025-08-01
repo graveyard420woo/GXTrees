@@ -8,9 +8,7 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=DotGothic16:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700?family=Micro+5&family=Silkscreen:wght@300&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -691,7 +689,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
             const landscapeBottomY = canvas.height;
             screenY = groundTopY + globalRandom() * (landscapeBottomY - groundTopY - 60);
 
-            ctx.font = '18px "DotGothic16", sans-serif';
+            ctx.font = '16px "Silkscreen", sans-serif';
             const textMetrics = ctx.measureText(plantName);
             textRect = {
                 x: screenX - textMetrics.width / 2, y: screenY + 10,
@@ -842,7 +840,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 }
                 
                 if (plant.status !== 'falling' && plant.status !== 'decaying' && plant.status !== 'destroyed' && plant.status !== 'burnt') {
-                    ctx.font = '18px "DotGothic16", sans-serif';
+                    ctx.font = '16px "Silkscreen", sans-serif';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
                     ctx.fillText(plant.name, plant.screenX + swayOffset + 1, plant.screenY + 16 + 1);
@@ -1383,7 +1381,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
 		ctx.save();
 		ctx.scale(direction, 1); // Apply the scale again to un-flip the text
 		
-		ctx.font = '16px "Tiny5", sans-serif';
+		ctx.font = '16px "Micro 5", sans-serif';
 		ctx.textAlign = 'center';
 		ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
 		// We multiply the shadow offset by the direction to move it correctly
