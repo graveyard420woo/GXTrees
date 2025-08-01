@@ -1578,7 +1578,7 @@
 
         }
 
-        const bob = Math.sin(creature.state_timer * 0.2) * (creature.state !== 'idle' ? 1.5 : 0);
+        const bob = Math.sin(2 * 0.2) * (creature.state !== 'idle' ? 1.5 : 0);
         ctx.translate(creature.x, creature.screenY + bob);
         ctx.scale(creature.speed > 0 ? 1 : -1, 1);
 
