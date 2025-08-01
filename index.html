@@ -1874,7 +1874,7 @@
         return;
     }
 
-    const bob = Math.sin(time / 200) * (creature.state !== 'idle' ? 1.5 : 0);
+    const bob = Math.sin(time / 100) * (creature.state !== 'idle' ? 1.5 : 0);
     
     // --- FINAL FIX: Round coordinates only for rendering ---
     const finalDrawX = Math.round(creature.x);
