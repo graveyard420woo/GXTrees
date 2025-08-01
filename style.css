@@ -29,18 +29,23 @@ canvas {
   font-style: normal;
 }
 
+.tiny5-regular {
+  font-family: "Tiny5", sans-serif;
+  font-style: normal;
+}
+
 .silkscreen-regular {
   font-family: "Silkscreen", sans-serif;
-  font-weight: 400;
+  font-weight: 100;
   font-style: normal;
   letter-spacing: -0.05em;
 }
 
 .silkscreen-bold {
   font-family: "Silkscreen", sans-serif;
-  font-weight: 400;
+  font-weight: 100;
   font-style: normal;
-  letter-spacing: -0.15em;
+  letter-spacing: -0.25em;
 }
 
 .controls-extra {
