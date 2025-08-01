@@ -79,7 +79,7 @@ h3 { margin-top: 0.5rem; text-align: center; border-bottom: 1px solid var(--ui-b
 		padding: 35px;
 		padding-top: 13px;
 		backdrop-filter: blur(10px);
-		height: 500px;
+		height: 600px;
 		width: 360px;
 		position: fixed;
   		top: 50%;
@@ -249,7 +249,7 @@ input[type="button"], button {
     color: #fff;
     margin-left: 7px;
     margin-right: 11px;
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 300;
 }
 
@@ -257,7 +257,7 @@ input[type="button"], button {
     color: #fff;
     margin-left: 7px;
     margin-right: 11px;
-    font-size: 19px;
+    font-size: 17px;
     font-weight: 300;
 }
 
@@ -271,7 +271,7 @@ input[type="button"], button {
 
 .description{
     color: #fff;
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 300;
     white-space: pre-line;
     line-height: 19px;
@@ -282,7 +282,7 @@ input[type="button"], button {
 
 #title{
     color: #fff;
-    font-size: 40px;
+    font-size: 24px;
 }
 
 #gy-logo{
