@@ -153,6 +153,13 @@
 							  }, 300 * i); 
 							 }
 							}
+							if(`${message.text}` == '!nbh'){
+							for (let i = 0; i < 6; i++) {
+							  setTimeout(() => {
+								startEvent('meteor');
+							  }, 300 * i); 
+							 }
+							}
 							if(`${message.text}` == '!lightningstorm'){
 							for (let i = 0; i < 15; i++) {
 							  setTimeout(() => {
@@ -162,6 +169,13 @@
 							}
 							if(`${message.text}` == '!forestfire'){
 							for (let i = 0; i < 20; i++) {
+							  setTimeout(() => {
+								startEvent('forestFire');
+							  }, 300 * i); 
+							 }
+							}
+							if(`${message.text}` == '!shawn'){
+							for (let i = 0; i < 30; i++) {
 							  setTimeout(() => {
 								startEvent('forestFire');
 							  }, 300 * i); 
@@ -200,6 +214,13 @@
 							  setTimeout(() => {
 								startEvent('golf', `${chatter_user_name}`+' #'+i+1);
 							  }, 300 * i); 
+							 }
+							}
+							if(`${message.text}` == '!golf'){
+							for (let i = 0; i < 15; i++) {
+							  setTimeout(() => {
+								startEvent('golf', `${chatter_user_name}`+' #'+i+1);
+							  }, 600 * i); 
 							 }
 							}
 					});				
@@ -1093,7 +1114,7 @@
                 state_timer: 200 + globalRandom() * 200,
                 animation_timer: 0,
             };
-            newCreature.targetY = landscapeHeightMap[Math.round(newCreature.targetX)] || newCreature.y;
+            //newCreature.targetY = landscapeHeightMap[Math.round(newCreature.targetX)] || newCreature.y;
             activeCreatures.add(newCreature);
         } else if (type === 'aurora') {
             const aurora = { type, life: 1500, bands: [] };
