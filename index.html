@@ -690,7 +690,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
             const landscapeBottomY = canvas.height;
             screenY = groundTopY + globalRandom() * (landscapeBottomY - groundTopY - 60);
 
-            ctx.font = 'bold 14px "Open Sans", sans-serif';
+            ctx.font = 'regular 16px "Tiny5", sans-serif';
             const textMetrics = ctx.measureText(plantName);
             textRect = {
                 x: screenX - textMetrics.width / 2, y: screenY + 10,
@@ -841,7 +841,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 }
                 
                 if (plant.status !== 'falling' && plant.status !== 'decaying' && plant.status !== 'destroyed' && plant.status !== 'burnt') {
-                    ctx.font = 'bold 14px "Open Sans", sans-serif';
+                    ctx.font = 'regular 16px "Tiny5", sans-serif';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
                     ctx.fillText(plant.name, plant.screenX + swayOffset + 1, plant.screenY + 16 + 1);
@@ -859,7 +859,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
         requestAnimationFrame(animate);
     }
     
-    // ## 6. ALL OTHER FUNCTIONS ARE HERE, UNABRIDGED ##
+    // ## 6. ALL OTHER FUNCTIONS ##
 
     function updatePlantStatus(plant, time) {
         if (plant.status === 'growing') {
@@ -1382,7 +1382,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
 		ctx.save();
 		ctx.scale(direction, 1); // Apply the scale again to un-flip the text
 		
-		ctx.font = 'bold 11px "Tiny5", sans-serif';
+		ctx.font = 'regular 14px "Tiny5", sans-serif';
 		ctx.textAlign = 'center';
 		ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
 		// We multiply the shadow offset by the direction to move it correctly
@@ -1502,7 +1502,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
         ctx.translate(canvas.width/2, canvas.height/2);
         ctx.scale(scale, scale);
         ctx.globalAlpha = alpha;
-        ctx.font = 'bold 30px "Open Sans", sans-serif';
+        ctx.font = 'bold 40px "Open Sans", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillStyle = 'black';
         ctx.fillText(message, 2, 2);
