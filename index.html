@@ -1088,7 +1088,7 @@
             const targetX = globalRandom() * (canvas.width - 400) + 2;
             const targetY = landscapeHeightMap[Math.round(targetX)];
             const meteor = {
-                type, stage: 'falling', life: 300,
+                type, stage: 'falling', life: 360,
                 x: targetX + 400, y: -100,
                 vx: -2, vy: (targetY + 100) / 300,
                 targetX, targetY, trail: []
