@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -1356,7 +1357,9 @@ Simply add it as a browser source by copying the URL from the address bar after 
         // --- Drawing the Golfer ---
         ctx.save();
         ctx.translate(golfer.x, golfer.screenY);
-        ctx.scale(Math.sign(golfer.speed), 1); // Face the correct direction
+			const direction = Math.sign(golfer.speed);
+    		ctx.scale(direction, 1); // Face the correct direction new way	
+        //ctx.scale(Math.sign(golfer.speed), 1); // Face the correct direction old way
         let frame = 'idle';
         if(golfer.stage === 'swinging') frame = 'swing';
         
@@ -1375,15 +1378,21 @@ Simply add it as a browser source by copying the URL from the address bar after 
         ctx.fillStyle = '#888'; ctx.fillRect(-2, 26, 6, 3);
         ctx.restore();
         
-        ctx.font = 'bold 12px "Open Sans", sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.fillText(golfer.name, 1, -38);
-        ctx.fillStyle = 'white';
-        ctx.fillText(golfer.name, 0, -39);
-		ctx.scale(Math.sign(golfer.speed), 1); // Flip the correct direction
-
-        ctx.restore();
+        // --- Draw the Golfer's Name ---
+		ctx.save();
+		ctx.scale(direction, 1); // Apply the scale again to un-flip the text
+		
+		ctx.font = 'bold 11px "Tiny5", sans-serif';
+		ctx.textAlign = 'center';
+		ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+		// We multiply the shadow offset by the direction to move it correctly
+		ctx.fillText(golfer.name, 1 * direction, -38);
+		ctx.fillStyle = 'white';
+		ctx.fillText(golfer.name, 0, -39);
+		
+		ctx.restore(); // Restore from the text-un-flipping scale
+		
+		ctx.restore(); // Restore from the main golfer translation and scale
     }
 
     function updateAndDrawGolfball(ball) {
