@@ -1059,7 +1059,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
 
     function startEvent(type, golfyName) {
         if (type === 'meteor') {
-            const targetX = globalRandom() * (canvas.width - 400) + 200;
+            const targetX = globalRandom() * (canvas.width - 400) + 2;
             const targetY = landscapeHeightMap[Math.round(targetX)];
             const meteor = {
                 type, stage: 'falling', life: 300,
@@ -1183,8 +1183,8 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 
                 const cx = e.targetX;
                 const cy = e.targetY + 5;
-                const baseRadius = 15 + globalRandom() * 10;
-                const complexity = 5 + globalRandom() * 5;
+                const baseRadius = 15 + globalRandom() * 80;
+                const complexity = 5 + globalRandom() * 4;
                 const jitter = 0.3 + globalRandom() * 0.4;
                 const phase1 = globalRandom() * 10;
                 const phase2 = globalRandom() * 10;
@@ -1503,7 +1503,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
         ctx.translate(canvas.width/2, canvas.height/2);
         ctx.scale(scale, scale);
         ctx.globalAlpha = alpha;
-        ctx.font = 'bold 40px "Open Sans", sans-serif';
+        ctx.font = 'bold 40px "Silkscreen", sans-serif';
         ctx.textAlign = 'center';
         ctx.fillStyle = 'black';
         ctx.fillText(message, 2, 2);
