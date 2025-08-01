@@ -1495,8 +1495,8 @@
     }
 //
     function updateAndDrawHoleInOne(e) {
-        if(e.life === 239) {
-            for(let i=0; i < 50; i++) {
+        if(e.life === 439) {
+            for(let i=0; i < 150; i++) {
                 const angle = globalRandom() * Math.PI * 2;
                 const speed = globalRandom() * 3 + 1;
                 e.particles.push({
@@ -1520,9 +1520,8 @@
         });
         e.particles = e.particles.filter(p => p.life > 0);
         
-        const progress = 1 - (e.life*2 / 240);
-		//const progress = 1 - (e.life / 240);
-        const scale = Math.sin(progress * Math.PI) * 2;
+		const progress = 1 - (e.life / 440);
+        const scale = Math.sin(progress * Math.PI) * 1.2;
         const alpha = Math.sin(progress * Math.PI);
         const message = `${e.name} got a Hole in ONE!`;
         
@@ -1534,6 +1533,8 @@
         ctx.textAlign = 'center';
         ctx.fillStyle = '#ec008c';
         ctx.fillText(message, 0, 0);
+		ctx.fillStyle = '#000000';
+        ctx.fillText(message, 1, 1);
         ctx.restore();
 		setTimeout(() => {
 			window.location.reload();
