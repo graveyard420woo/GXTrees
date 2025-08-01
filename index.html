@@ -1701,7 +1701,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
             ctx.fillStyle = `rgba(255, 255, 255, ${0.05 * dayFactor})`;
             ctx.shadowColor = `rgba(255, 255, 255, ${dayFactor * 0.04})`;
             ctx.shadowBlur = 40;
-			ctx.filter = "blur(4px)";
+			//ctx.filter = "blur(4px)";
             c.puffs.forEach(p => {
                 ctx.beginPath();
                 ctx.ellipse(c.x + p.dx, c.y + p.dy, p.r, p.r * 0.7, 0, 0, Math.PI * 2);
