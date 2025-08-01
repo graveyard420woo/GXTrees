@@ -447,7 +447,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
         landscapeCanvas.width = canvas.width;
         landscapeCanvas.height = canvas.height;
         landCtx = landscapeCanvas.getContext('2d');
-        const landscapeHeight = canvas.height / 6;
+        const landscapeHeight = canvas.height / 11;
         const startY = canvas.height - landscapeHeight;
         const hills = Array.from({length: 4}, () => ({ amp: globalRandom() * landscapeHeight / 3, freq: globalRandom() * 0.01 + 0.005, phase: globalRandom() * Math.PI * 2 }));
         for (let x = 0; x < canvas.width; x++) {
@@ -640,7 +640,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 }
             }
 
-            const centerColors = ['#5a3a22', '#4d311f', '#3b2518'];
+            const centerColors = ['#5a3a22', '#4d311f', '#3b2518', '#b41e8e', '#ed1b2f', '#ffcb05', '#89292d'];
             for(let cx = -headRadius; cx <= headRadius; cx++) {
                 for(let cy = -headRadius; cy <= headRadius; cy++) {
                     if(cx*cx + cy*cy <= headRadius*headRadius) {
@@ -1694,9 +1694,10 @@ Simply add it as a browser source by copying the URL from the address bar after 
             c.x += c.speed;
             ctx.save();
             const dayFactor = Math.sin(timeOfDay * Math.PI);
-            ctx.fillStyle = `rgba(255, 255, 255, ${0.1 * dayFactor})`;
-            ctx.shadowColor = `rgba(255, 255, 255, ${dayFactor * 0.5})`;
+            ctx.fillStyle = `rgba(255, 255, 255, ${0.05 * dayFactor})`;
+            ctx.shadowColor = `rgba(255, 255, 255, ${dayFactor * 0.04})`;
             ctx.shadowBlur = 40;
+			ctx.filter = "blur(4px)";
             c.puffs.forEach(p => {
                 ctx.beginPath();
                 ctx.ellipse(c.x + p.dx, c.y + p.dy, p.r, p.r * 0.7, 0, 0, Math.PI * 2);
