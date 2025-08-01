@@ -15,7 +15,7 @@
 
 <div id="bigcontainer1" class="initial-fade"><div id="bigcontainer"><div id="centercontentbox"><img id="gy-logo" style="float:left; margin-left:-15px;" src="gxtrees.png">
                     <span class="description-name text"><a class="logofollow-box" href="https://www.twitch.tv/graveyard420woo" target="_blank"><img id="gy-logo" src="gy.png"></a>Description:</span>
-                    <span class="description-main description">This is an overlay that shows a dynamic landscape of unique trees for everyone in chat on your stream. Also, theres golf!<br>
+                    <span class="description-main description">This is an overlay that creates a dynamic landscape of unique trees for everyone in chat on your stream. Also, theres golf!<br>
                     Simply add it as a browser source by copying the URL from the address bar after connecting your Twitch!</span>
                     <br>
                     <a id="authorize" class="login-box" target="">
@@ -1211,7 +1211,7 @@
                 const cy = e.targetY + 5;
                 const baseRadius = 15 + globalRandom() * 100;
                 const complexity = 5 + globalRandom() * 4;
-                const jitter = 0.3 + globalRandom() * 0.4;
+                const jitter = 0.1 + globalRandom() * 0.4;
                 const phase1 = globalRandom() * 10;
                 const phase2 = globalRandom() * 10;
                 
@@ -1578,7 +1578,7 @@
 
         }
 
-        const bob = Math.sin(creature.animation_timer * 0.2) * (creature.state !== 'idle' ? 1.5 : 0);
+        const bob = Math.sin(creature.state_timer * 0.2) * (creature.state !== 'idle' ? 1.5 : 0);
         ctx.translate(creature.x, creature.screenY + bob);
         ctx.scale(creature.speed > 0 ? 1 : -1, 1);
 
