@@ -14,10 +14,10 @@
 </head>
 <body>
 
-<div id="bigcontainer1"><div id="bigcontainer" class="initial-fade"><div id="centercontentbox"><img id="gy-logo" style="float:left; margin-left:-15px;" src="gxtrees.png">
+<div id="bigcontainer1" class="initial-fade"><div id="bigcontainer"><div id="centercontentbox"><img id="gy-logo" style="float:left; margin-left:-15px;" src="gxtrees.png">
                     <span class="description-name text"><a class="logofollow-box" href="https://www.twitch.tv/graveyard420woo" target="_blank"><img id="gy-logo" src="gy.png"></a>Description:</span>
-                    <span class="description-main description">This is an overlay that shows a dynamic landscape of unique trees for everyone in chat on your stream. Also, theres golf!<br>
-Simply add it as a browser source by copying the URL from the address bar after connecting your Twitch!</span>
+                    This is an overlay that shows a dynamic landscape of unique trees for everyone in chat on your stream. Also, theres golf!<br>
+<span class="description-main description">Simply add it as a browser source by copying the URL from the address bar after connecting your Twitch!</span>
 <br>
                     <a id="authorize" class="login-box" target="">
                      <img id="twitch-logo" src="tlogo.png">
@@ -70,7 +70,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
 		var chattersColor = '';
 		let previousChatters = [];	
 		
-		const myBigAssDiv = document.getElementById('bigcontainer');
+		const myBigAssDiv = document.getElementById('bigcontainer1');
 		  setTimeout(() => {
 			myBigAssDiv.classList.remove('initial-fade');
 			myBigAssDiv.classList.add('visible-fade');
@@ -697,7 +697,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
             const landscapeBottomY = canvas.height;
             screenY = groundTopY + globalRandom() * (landscapeBottomY - groundTopY - 60);
 
-            ctx.font = '16px "Silkscreen", sans-serif';
+            ctx.font = '16px "Tiny5", sans-serif';
             const textMetrics = ctx.measureText(plantName);
             textRect = {
                 x: screenX - textMetrics.width / 2, y: screenY + 10,
@@ -848,7 +848,7 @@ Simply add it as a browser source by copying the URL from the address bar after 
                 }
                 
                 if (plant.status !== 'falling' && plant.status !== 'decaying' && plant.status !== 'destroyed' && plant.status !== 'burnt') {
-                    ctx.font = '16px "Silkscreen", sans-serif';
+                    ctx.font = '16px "Tiny5", sans-serif';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
                     ctx.fillText(plant.name, plant.screenX + swayOffset + 1, plant.screenY + 16 + 1);
