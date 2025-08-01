@@ -1088,7 +1088,7 @@
             const targetX = globalRandom() * (canvas.width - 400) + 2;
             const targetY = landscapeHeightMap[Math.round(targetX)];
             const meteor = {
-                type, stage: 'falling', life: 390,
+                type, stage: 'falling', life: 300,
                 x: targetX + 400, y: -100,
                 vx: -2, vy: (targetY + 100) / 300,
                 targetX, targetY, trail: []
@@ -1874,7 +1874,7 @@
         return;
     }
 
-    const bob = Math.sin(time / 100) * (creature.state !== 'idle' ? 1.5 : 0);
+    const bob = Math.sin(time / 96) * (creature.state !== 'idle' ? 1.5 : 0);
     
     // --- FINAL FIX: Round coordinates only for rendering ---
     const finalDrawX = Math.round(creature.x);
