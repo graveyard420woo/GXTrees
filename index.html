@@ -1388,7 +1388,7 @@
 		ctx.save();
 		ctx.scale(direction, 1); // Apply the scale again to un-flip the text
 		
-		ctx.font = '17px "Tiny5", sans-serif';
+		ctx.font = 'regular 17px "Tiny5", sans-serif';
 		ctx.textAlign = 'center';
 		ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
 		// We multiply the shadow offset by the direction to move it correctly
@@ -1562,7 +1562,8 @@
         ctx.translate(creature.x, creature.screenY + bob);
         ctx.scale(creature.speed > 0 ? 1 : -1, 1);
 
-        if (creature.creatureType === 'fox') {
+			//old creatures
+		 /*if (creature.creatureType === 'fox') {
             ctx.fillStyle = '#C06014'; ctx.fillRect(0, -8, 8, 4);
             ctx.fillStyle = '#333'; ctx.fillRect(1, -4, 2, 3); ctx.fillRect(5, -4, 2, 3);
             ctx.fillStyle = 'white'; ctx.fillRect(7, -8, 3, 2);
@@ -1589,6 +1590,33 @@
             ctx.fillStyle = '#3D2B1F'; ctx.fillRect(14, -12, 1, 1);
             ctx.fillRect(11, -14, 1, 1);
             ctx.fillRect(9, -15, 2, 2);
+        }*/
+		
+		//only rabbits..
+        if (creature.creatureType === 'fox') {
+            ctx.fillStyle = '#999999'; ctx.fillRect(1, -5, 5, 4);
+            ctx.fillStyle = 'white'; ctx.fillRect(4, -6, 3, 3);
+            ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+            ctx.fillStyle = '#cbd4d1'; ctx.fillRect(3, -8, 1, 3);
+            ctx.fillRect(4, -8, 1, 5);
+        } else if (creature.creatureType === 'deer') {
+            ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 4);
+            ctx.fillStyle = '#afb6c8'; ctx.fillRect(4, -6, 3, 7);
+            ctx.fillStyle = '#333'; ctx.fillRect(7, -5, 1, 1);
+            ctx.fillStyle = 'white'; ctx.fillRect(3, -9, 1, 3);
+            ctx.fillRect(2, -7, 1, 6);
+        } else if (creature.creatureType === 'rabbit') {
+            ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 3);
+            ctx.fillStyle = '#cbd4d1'; ctx.fillRect(4, -6, 3, 3);
+            ctx.fillStyle = '#6c5c65'; ctx.fillRect(6, -4, 1, 1);
+            ctx.fillStyle = 'white'; ctx.fillRect(3, -9, 1, 3);
+            ctx.fillRect(2, -9, 2, 3);
+        } else if (creature.creatureType === 'bear') {
+            ctx.fillStyle = '#667375'; ctx.fillRect(0, -5, 5, 4);
+            ctx.fillStyle = 'white'; ctx.fillRect(4, -6, 2, 3);
+            ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+            ctx.fillStyle = '#edfffd'; ctx.fillRect(3, -8, 1, 3);
+            ctx.fillRect(5, -9, 1, 3);
         }
     }
 
