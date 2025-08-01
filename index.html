@@ -10,7 +10,6 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -697,7 +696,7 @@
             const landscapeBottomY = canvas.height;
             screenY = groundTopY + globalRandom() * (landscapeBottomY - groundTopY - 60);
 
-            ctx.font = '26px "Tiny5", sans-serif';
+            ctx.font = '21px "Tiny5", sans-serif';
             const textMetrics = ctx.measureText(plantName);
             textRect = {
                 x: screenX - textMetrics.width / 2, y: screenY + 10,
@@ -848,7 +847,7 @@
                 }
                 
                 if (plant.status !== 'falling' && plant.status !== 'decaying' && plant.status !== 'destroyed' && plant.status !== 'burnt') {
-                    ctx.font = '26px "Tiny5", sans-serif';
+                    ctx.font = '21px "Tiny5", sans-serif';
                     ctx.textAlign = 'center';
                     ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
                     ctx.fillText(plant.name, plant.screenX + swayOffset + 1, plant.screenY + 16 + 1);
@@ -1189,7 +1188,7 @@
                 
                 const cx = e.targetX;
                 const cy = e.targetY + 5;
-                const baseRadius = 15 + globalRandom() * 80;
+                const baseRadius = 15 + globalRandom() * 180;
                 const complexity = 5 + globalRandom() * 4;
                 const jitter = 0.3 + globalRandom() * 0.4;
                 const phase1 = globalRandom() * 10;
@@ -1389,7 +1388,7 @@
 		ctx.save();
 		ctx.scale(direction, 1); // Apply the scale again to un-flip the text
 		
-		ctx.font = '16px "Tiny5", sans-serif';
+		ctx.font = '17px "Tiny5", sans-serif';
 		ctx.textAlign = 'center';
 		ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
 		// We multiply the shadow offset by the direction to move it correctly
