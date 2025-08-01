@@ -765,7 +765,7 @@
             startWeather(weatherOptions[Math.floor(globalRandom() * weatherOptions.length)]);
         }
         if (globalRandom() < 0.00005 && events.length === 0) startEvent('meteor');
-        if (globalRandom() < 0.001 && activeCreatures.size < 2) startEvent('creature');
+        if (globalRandom() < 0.0009 && activeCreatures.size < 11) startEvent('creature');
         if (globalRandom() < 0.008 && ambientLife.length < 15) startAmbientLife(time);
         
         const renderables = [...activePlants.values(), ...activeCreatures, ...events.filter(e => e.type === 'golfBall' || e.type === 'golfer' || e.type === 'holeInOne')];
@@ -1188,7 +1188,7 @@
                 
                 const cx = e.targetX;
                 const cy = e.targetY + 5;
-                const baseRadius = 15 + globalRandom() * 180;
+                const baseRadius = 15 + globalRandom() * 100;
                 const complexity = 5 + globalRandom() * 4;
                 const jitter = 0.3 + globalRandom() * 0.4;
                 const phase1 = globalRandom() * 10;
