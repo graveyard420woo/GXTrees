@@ -1297,22 +1297,17 @@
 	
 	function updateAndDrawMeteor(e) {
 		// -- ONE-TIME INITIALIZATION FOR NEW METEOR PROPERTIES --
-		// If the meteor doesn't have our new properties, create them.
 		if (typeof e.procedural === 'undefined') {
-			e.procedural = true; // Mark as initialized
-			e.size = 4 + globalRandom() * 4; // Base size for the rock
-			e.rotation = 0; // Initial rotation
-			e.rotationSpeed = (globalRandom() - 0.5) * 0.1; // Random tumble speed and direction
-	
-			// Assign a random color palette
+			e.procedural = true;
+			e.size = 4 + globalRandom() * 4;
+			e.rotation = 0;
+			e.rotationSpeed = (globalRandom() - 0.5) * 0.1;
 			e.colors = meteorFirePalettes[Math.floor(globalRandom() * meteorFirePalettes.length)];
-	
-			// Generate a unique, jagged shape for the meteor rock
 			e.shapePoints = [];
 			const corners = 5 + Math.floor(globalRandom() * 5);
 			for (let i = 0; i < corners; i++) {
 				const angle = (i / corners) * Math.PI * 2;
-				const radius = e.size * (0.8 + globalRandom() * 0.4); // Varying radius for jaggedness
+				const radius = e.size * (0.8 + globalRandom() * 0.4);
 				e.shapePoints.push({
 					x: Math.cos(angle) * radius,
 					y: Math.sin(angle) * radius
@@ -1328,20 +1323,18 @@
 			e.rotation += e.rotationSpeed;
 	
 			// -- CREATE TRAIL PARTICLES --
+			// The color property is no longer needed here.
 			e.trail.push({
 				x: e.x,
 				y: e.y,
-				life: 50,
-				// Pick a random color from the meteor's trail palette for variety
-				color: e.colors.trail[Math.floor(globalRandom() * e.colors.trail.length)]
+				life: 50
 			});
 	
 			// -- DRAW THE NEW METEOR --
 			ctx.save();
-			ctx.translate(e.x, e.y); // Move to the meteor's position
-			ctx.rotate(e.rotation);   // Apply its rotation
+			ctx.translate(e.x, e.y);
+			ctx.rotate(e.rotation);
 	
-			// 1. Draw the outer fiery glow using a gradient
 			const glowRadius = e.size * 3.5;
 			const glowGradient = ctx.createRadialGradient(0, 0, e.size * 0.8, 0, 0, glowRadius);
 			glowGradient.addColorStop(0, e.colors.glow);
@@ -1350,9 +1343,8 @@
 			ctx.fillStyle = glowGradient;
 			ctx.fillRect(-glowRadius, -glowRadius, glowRadius * 2, glowRadius * 2);
 	
-			// 2. Draw the procedural rock shape
 			ctx.fillStyle = e.colors.core;
-			ctx.strokeStyle = '#1a1a1a'; // Dark outline for definition
+			ctx.strokeStyle = '#1a1a1a';
 			ctx.lineWidth = 1;
 			ctx.beginPath();
 			ctx.moveTo(e.shapePoints[0].x, e.shapePoints[0].y);
@@ -1363,18 +1355,70 @@
 			ctx.fill();
 			ctx.stroke();
 	
-			ctx.restore(); // Restore context to original state
+			ctx.restore();
 	
-			// -- DRAW AND UPDATE TRAIL --
-			e.trail.forEach(t => {
-				t.life--;
-				// Use the particle's assigned color with decreasing opacity
-				const rgbColor = hexToRgb(t.color);
-				ctx.fillStyle = `rgba(${rgbColor}, ${t.life / 50})`;
+			// -- NEW: DRAW GRADIENT TRAIL --
+			if (e.trail.length > 1) {
+				// 1. Create a linear gradient from the meteor head to the tail's end
+				const trailHead = { x: e.x, y: e.y };
+				const trailEnd = e.trail[0]; // The oldest point defines the gradient's end
+				const gradient = ctx.createLinearGradient(trailHead.x, trailHead.y, trailEnd.x, trailEnd.y);
+	
+				const rgbColor = hexToRgb(e.colors.glow); // Use the glow color for the trail
+				gradient.addColorStop(0, `rgba(${rgbColor}, 0.8)`); // Start at 80% opacity
+				gradient.addColorStop(1, `rgba(${rgbColor}, 0.0)`); // End at 0% opacity
+	
+				// 2. Build the trail's polygon shape
 				ctx.beginPath();
-				ctx.arc(t.x, t.y, 2, 0, Math.PI * 2);
-				ctx.fill();
-			});
+				const maxWidth = e.size * 2; // Maximum width of the trail
+				
+				// Define the points for the left and right sides of the trail ribbon
+				const leftSide = [];
+				const rightSide = [];
+				const allPoints = [trailHead, ...e.trail];
+	
+				for (let i = 1; i < allPoints.length; i++) {
+					const currentPoint = allPoints[i];
+					const prevPoint = allPoints[i - 1];
+					
+					// Vector of the current trail segment
+					const directionX = currentPoint.x - prevPoint.x;
+					const directionY = currentPoint.y - prevPoint.y;
+					const distance = Math.hypot(directionX, directionY) || 1;
+	
+					// Calculate a perpendicular vector to create the ribbon's width
+					const perpX = -directionY / distance;
+					const perpY = directionX / distance;
+	
+					// The width should taper off along the length of the trail
+					const width = maxWidth * (1 - (i / allPoints.length));
+	
+					// Add points for both sides of the ribbon
+					rightSide.push({ x: currentPoint.x + perpX * width, y: currentPoint.y + perpY * width });
+					leftSide.push({ x: currentPoint.x - perpX * width, y: currentPoint.y - perpY * width });
+				}
+	
+				// 3. Draw the polygon and fill it with the gradient
+				if (rightSide.length > 0) {
+					// Move to the meteor's center (the tip of our trail shape)
+					ctx.moveTo(trailHead.x, trailHead.y);
+	
+					// Draw down one side of the trail
+					for (const point of rightSide) {
+						ctx.lineTo(point.x, point.y);
+					}
+	
+					// Draw up the other side of the trail in reverse order
+					for (let i = leftSide.length - 1; i >= 0; i--) {
+						ctx.lineTo(leftSide[i].x, leftSide[i].y);
+					}
+	
+					ctx.closePath(); // Connect back to the meteor's center
+					ctx.fillStyle = gradient;
+					ctx.fill();
+				}
+			}
+	
 	
 			// Filter out dead trail particles
 			e.trail = e.trail.filter(t => t.life > 0);
