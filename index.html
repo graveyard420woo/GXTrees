@@ -1114,7 +1114,7 @@
                 state_timer: 200 + globalRandom() * 200,
                 animation_timer: 0,
             };
-            //newCreature.targetY = landscapeHeightMap[Math.round(newCreature.targetX)] || newCreature.y;
+            newCreature.targetY = landscapeHeightMap[Math.round(newCreature.targetX)] || newCreature.y;
             activeCreatures.add(newCreature);
         } else if (type === 'aurora') {
             const aurora = { type, life: 1500, bands: [] };
@@ -1874,7 +1874,7 @@
         return;
     }
 
-    const bob = Math.sin(creature.state_timer * 0.2) * (creature.state !== 'idle' ? 1.5 : 0);
+    const bob = Math.sin(creature.animation_timer * 0.2) * (creature.state !== 'idle' ? 1.5 : 0);
     
     // --- FINAL FIX: Round coordinates only for rendering ---
     const finalDrawX = Math.round(creature.x);
@@ -1884,121 +1884,7 @@
     
     ctx.scale(creature.speed > 0 ? 1 : -1, 1);
     
-    // Drawing code for creatures...
-    if (creature.creatureType === 'fox') {
-        ctx.fillStyle = '#999999'; ctx.fillRect(1, -5, 5, 4);
-        ctx.fillStyle = 'white'; ctx.fillRect(4, -6, 3, 3);
-        ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
-        ctx.fillStyle = '#cbd4d1'; ctx.fillRect(3, -8, 1, 3);
-        ctx.fillRect(4, -8, 1, 5);
-    } else if (creature.creatureType === 'deer') {
-        ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 4);
-        ctx.fillStyle = '#afb6c8'; ctx.fillRect(4, -6, 3, 7);
-        ctx.fillStyle = '#333'; ctx.fillRect(7, -5, 1, 1);
-        ctx.fillStyle = 'white'; ctx.fillRect(3, -9, 1, 3);
-        ctx.fillRect(2, -7, 1, 6);
-    } else if (creature.creatureType === 'rabbit') {
-        ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 3);
-        ctx.fillStyle = '#cbd4d1'; ctx.fillRect(4, -6, 3, 3);
-        ctx.fillStyle = '#6c5c65'; ctx.fillRect(6, -4, 1, 1);
-        ctx.fillStyle = 'white'; ctx.fillRect(3, -9, 1, 3);
-        ctx.fillRect(2, -9, 2, 3);
-    } else if (creature.creatureType === 'bear') {
-        ctx.fillStyle = '#667375'; ctx.fillRect(0, -5, 5, 4);
-        ctx.fillStyle = 'white'; ctx.fillRect(4, -6, 2, 3);
-        ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
-        ctx.fillStyle = '#edfffd'; ctx.fillRect(3, -8, 1, 3);
-        ctx.fillRect(5, -9, 1, 3);
-    }
-}
-
-    function updateAndDrawCreature(creature, time) {
-        creature.state_timer--;
-        creature.animation_timer++;
-        creature.life--;
-
-        if (creature.life <= 200 && creature.state !== 'leaving') {
-            creature.state = 'leaving';
-            creature.targetX = creature.x > canvas.width / 2 ? canvas.width + 50 : -50;
-            creature.speed = (creature.x < creature.targetX ? 1 : -1) * (0.3 + globalRandom() * 0.4);
-        }
-        
-        if (creature.state === 'roaming' || creature.state === 'leaving') {
-             creature.x += creature.speed;
-			 
-		// --- SMOOTH Y-POSITION LOGIC ---
-        const x1 = Math.floor(creature.x);
-        const x2 = x1 + 1;
-        
-        if (x1 >= 0 && x2 < canvas.width) {
-            const y1 = landscapeHeightMap[x1];
-            const y2 = landscapeHeightMap[x2];
-            const fractionalX = creature.x - x1; // Percentage of distance between x1 and x2
-            
-            // Linear interpolation for smooth height transition
-            creature.screenY = y1 + (y2 - y1) * fractionalX;
-        } else {
-            creature.screenY = canvas.height * 2; // Keep creature off-screen
-        }
-        // --- END OF FIX ---
-             if((creature.state_timer <= 0 || Math.abs(creature.x - creature.targetX) < 5) && creature.state !== 'leaving') {
-                creature.state = 'idle';
-                creature.state_timer = 100 + globalRandom() * 200;
-             }
-        } else if (creature.state === 'idle') {
-            if(creature.state_timer <= 0) {
-                creature.state = 'roaming';
-                creature.state_timer = 200 + globalRandom() * 200;
-                creature.targetX = globalRandom() * (canvas.width - 200) + 100;
-                creature.speed = (creature.x < creature.targetX ? 1 : -1) * (0.3 + globalRandom() * 0.4);
-            }
-        }
-        
-        if (creature.x < -50 || creature.x > canvas.width + 50) {
-            activeCreatures.delete(creature);
-            return;
-
-        }
-
-        const bob = Math.sin(creature.animation_timer * 0.2) * (creature.state !== 'idle' ? 1.5 : 0);
-         // --- FINAL FIX: Round coordinates only for rendering ---
-		const finalDrawX = Math.round(creature.x);
-		const finalDrawY = Math.round(creature.screenY + bob);
-		ctx.translate(finalDrawX, finalDrawY);
-		// --- END OF FIX ---
-        ctx.scale(creature.speed > 0 ? 1 : -1, 1);
-
-			//old creatures
-		 /*if (creature.creatureType === 'fox') {
-            ctx.fillStyle = '#C06014'; ctx.fillRect(0, -8, 8, 4);
-            ctx.fillStyle = '#333'; ctx.fillRect(1, -4, 2, 3); ctx.fillRect(5, -4, 2, 3);
-            ctx.fillStyle = 'white'; ctx.fillRect(7, -8, 3, 2);
-            ctx.fillStyle = '#333'; ctx.fillRect(9, -8, 1, 1); ctx.fillRect(6, -9, 1, 1);
-            ctx.fillRect(3, -11, 2, 2);
-            ctx.fillStyle = '#C06014'; ctx.fillRect(-6, -8, 6, 2);
-            ctx.fillStyle = 'white'; ctx.fillRect(-8, -8, 2, 2);
-        } else if (creature.creatureType === 'deer') {
-            ctx.fillStyle = '#8B5A2B'; ctx.fillRect(0, -12, 10, 6);
-            ctx.fillStyle = '#654321'; ctx.fillRect(1, -6, 2, 6); ctx.fillRect(7, -6, 2, 6);
-            ctx.fillStyle = '#A0522D'; ctx.fillRect(9, -15, 4, 3);
-            ctx.fillStyle = '#333'; ctx.fillRect(12, -15, 1, 1); ctx.fillRect(10, -16, 1, 1);
-            ctx.fillStyle = '#654321'; ctx.fillRect(8, -19, 1, 3); ctx.fillRect(6, -21, 1, 3);
-        } else if (creature.creatureType === 'rabbit') {
-            ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 4);
-            ctx.fillStyle = 'white'; ctx.fillRect(4, -6, 3, 3);
-            ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
-            ctx.fillStyle = 'white'; ctx.fillRect(3, -9, 1, 3);
-            ctx.fillRect(5, -9, 1, 3);
-        } else if (creature.creatureType === 'bear') {
-            ctx.fillStyle = '#5C4033'; ctx.fillRect(0, -10, 12, 8);
-            ctx.fillStyle = '#3D2B1F'; ctx.fillRect(1, -2, 4, 3); ctx.fillRect(7, -2, 4, 3);
-            ctx.fillStyle = '#5C4033'; ctx.fillRect(10, -13, 5, 4);
-            ctx.fillStyle = '#3D2B1F'; ctx.fillRect(14, -12, 1, 1);
-            ctx.fillRect(11, -14, 1, 1);
-            ctx.fillRect(9, -15, 2, 2);
-        }*/
-		
-		//only rabbits..
+    //only rabbits..
         if (creature.creatureType === 'fox') {
             ctx.fillStyle = '#999999'; ctx.fillRect(1, -5, 5, 4);
             ctx.fillStyle = '#c0fafc'; ctx.fillRect(4, -6, 3, 3);
@@ -2024,7 +1910,36 @@
             ctx.fillStyle = '#edfffd'; ctx.fillRect(3, -8, 1, 3);
             ctx.fillRect(5, -9, 1, 3);
         }
-    }
+}
+	//old creatures
+ /*if (creature.creatureType === 'fox') {
+	ctx.fillStyle = '#C06014'; ctx.fillRect(0, -8, 8, 4);
+	ctx.fillStyle = '#333'; ctx.fillRect(1, -4, 2, 3); ctx.fillRect(5, -4, 2, 3);
+	ctx.fillStyle = 'white'; ctx.fillRect(7, -8, 3, 2);
+	ctx.fillStyle = '#333'; ctx.fillRect(9, -8, 1, 1); ctx.fillRect(6, -9, 1, 1);
+	ctx.fillRect(3, -11, 2, 2);
+	ctx.fillStyle = '#C06014'; ctx.fillRect(-6, -8, 6, 2);
+	ctx.fillStyle = 'white'; ctx.fillRect(-8, -8, 2, 2);
+} else if (creature.creatureType === 'deer') {
+	ctx.fillStyle = '#8B5A2B'; ctx.fillRect(0, -12, 10, 6);
+	ctx.fillStyle = '#654321'; ctx.fillRect(1, -6, 2, 6); ctx.fillRect(7, -6, 2, 6);
+	ctx.fillStyle = '#A0522D'; ctx.fillRect(9, -15, 4, 3);
+	ctx.fillStyle = '#333'; ctx.fillRect(12, -15, 1, 1); ctx.fillRect(10, -16, 1, 1);
+	ctx.fillStyle = '#654321'; ctx.fillRect(8, -19, 1, 3); ctx.fillRect(6, -21, 1, 3);
+} else if (creature.creatureType === 'rabbit') {
+	ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 4);
+	ctx.fillStyle = 'white'; ctx.fillRect(4, -6, 3, 3);
+	ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+	ctx.fillStyle = 'white'; ctx.fillRect(3, -9, 1, 3);
+	ctx.fillRect(5, -9, 1, 3);
+} else if (creature.creatureType === 'bear') {
+	ctx.fillStyle = '#5C4033'; ctx.fillRect(0, -10, 12, 8);
+	ctx.fillStyle = '#3D2B1F'; ctx.fillRect(1, -2, 4, 3); ctx.fillRect(7, -2, 4, 3);
+	ctx.fillStyle = '#5C4033'; ctx.fillRect(10, -13, 5, 4);
+	ctx.fillStyle = '#3D2B1F'; ctx.fillRect(14, -12, 1, 1);
+	ctx.fillRect(11, -14, 1, 1);
+	ctx.fillRect(9, -15, 2, 2);
+}*/
 
     function startAmbientLife(time) {
         const type = (timeOfDay > 0.75 || timeOfDay < 0.25) ? 'firefly' : 'bird';
