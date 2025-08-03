@@ -1517,8 +1517,7 @@
 					ctx.fill();
 				}
 			}
-	
-	
+
 			// Filter out dead trail particles
 			e.trail = e.trail.filter(t => t.life > 0);
 			
@@ -1757,7 +1756,7 @@
 							const angle = Math.atan2(y - cy, x - cx);
 							const lumpyRadius = getLumpyRadius(angle);
 							const lumpyRim = lumpyRadius + 2 + globalRandom();
-							const distSq = (x - cx) ** 1.1 + (y - cy) ** 1.2;
+							const distSq = (x - cx) ** 2 + (y - cy) ** 2;
 	
 							if (distSq <= lumpyRadius ** 2) {
 								landCtx.fillStyle = palette.floor;
