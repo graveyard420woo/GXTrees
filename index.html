@@ -1465,7 +1465,7 @@
 	
 				const rgbColor = hexToRgbA(e.colors.glow); // Use the glow color for the trail
 				gradient.addColorStop(0, `rgba(${rgbColor}, 0.8)`); // Start at 80% opacity
-				gradient.addColorStop(1, `rgba(${rgbColor}, 0.0)`); // End at 0% opacity
+				gradient.addColorStop(0.8, `rgba(${rgbColor}, 0.0)`); // End at 0% opacity
 	
 				// 2. Build the trail's polygon shape
 				ctx.beginPath();
