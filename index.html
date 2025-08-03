@@ -1087,7 +1087,7 @@
             const targetX = globalRandom() * (canvas.width - 400) + 2;
             const targetY = landscapeHeightMap[Math.round(targetX)];
             const meteor = {
-                type, stage: 'falling', life: 420,
+                type, stage: 'falling', life: 520,
                 x: targetX + 400, y: -100,
                 vx: -2, vy: (targetY + 100) / 300,
                 targetX, targetY, trail: []
@@ -2091,7 +2091,7 @@
 		const progress = 1 - (e.life / 240);
         const scale = Math.sin(progress * Math.PI) * 1.2;
         const alpha = Math.sin(progress * Math.PI);
-        const message = `${e.name}\n got a Hole in ONE!`;
+        const message = `${e.name}`+'\n got a Hole in ONE!';
         
         ctx.save();
         ctx.translate(canvas.width/2, canvas.height/2);
