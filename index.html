@@ -592,6 +592,8 @@
                 drawLeafMass(pixels, x + Math.cos(angle) * dist - 2, y + Math.sin(angle) * dist - 2, clusterZ + 2, clusterRadius * 0.7, palette.leaf[1], 1.2, random);
             }
         },
+		/*
+		//uncomment for Saguaro cacti to be included
         generateSaguaro: (pixels, x, y, palette, random) => {
             const mainHeight = 70 + random() * 50;
             const mainWidth = 6 + random() * 4;
@@ -633,6 +635,7 @@
                 drawCactusColumn(pixels, x + (mainWidth/2 * direction) + (horizontalBend * direction), y, armStartZ, armHeight, armWidth, 0.4);
             }
         },
+		*/
         generateSunflower: (pixels, x, y, palette, random) => {
             const stemHeight = 60 + random() * 20;
             const stemWidth = 2;
@@ -910,7 +913,7 @@
                 plant.allPixels.forEach(p => {
                     const s = toScreen(p.x, p.y, p.z);
                     spriteCtx.fillStyle = p.color;
-                    spriteCtx.fillRect(s.x - bounds.minX, s.y - bounds.minY, 1, 1);
+                    spriteCtx.fillRect(s.x - bounds.minX, s.y - bounds.minY, 2, 2);
                 });
 
                 plant.spriteOffset = {x: bounds.minX, y: bounds.minY};
@@ -2341,7 +2344,7 @@
 			const saturation = Math.floor(Math.random() * (100 - 90 + 1)) + 90; // 90% to 100%
 			const lightness = Math.floor(Math.random() * (90 - 50 + 1)) + 50;  // 50% to 60%
             ctx.fillStyle = `hsla(${hue}, ${saturation}%, ${lightness}%, ${alpha})`;
-            ctx.fillRect(s.x, s.y, 3, 3);
+            ctx.fillRect(s.x, s.y, 2, 2);
         });
     }
 
