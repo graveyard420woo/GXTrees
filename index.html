@@ -2169,31 +2169,82 @@
     ctx.scale(creature.speed > 0 ? 1 : -1, 1);
     
     //only rabbits..
-        if (creature.creatureType === 'fox') {
-            ctx.fillStyle = '#999999'; ctx.fillRect(1, -5, 5, 4);
-            ctx.fillStyle = '#c0fafc'; ctx.fillRect(4, -6, 3, 3);
-            ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
-            ctx.fillStyle = '#cbd4d1'; ctx.fillRect(3, -8, 1, 3);
-            ctx.fillRect(4, -8, 3, 5);
-        } else if (creature.creatureType === 'deer') {
-            ctx.fillStyle = '#cccccc'; ctx.fillRect(0, -5, 5, 4);
-            ctx.fillStyle = '#afb6c8'; ctx.fillRect(4, -6, 3, 7);
-            ctx.fillStyle = '#333'; ctx.fillRect(7, -5, 1, 1);
-            ctx.fillStyle = '#ddb3ff'; ctx.fillRect(3, -9, 1, 3);
-            ctx.fillRect(2, -7, 1, 6);
-        } else if (creature.creatureType === 'rabbit') {
-            ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 3);
-            ctx.fillStyle = '#cbd4d1'; ctx.fillRect(4, -6, 3, 3);
-            ctx.fillStyle = '#6c5c65'; ctx.fillRect(6, -4, 1, 1);
-            ctx.fillStyle = '#c0fafc'; ctx.fillRect(3, -9, 1, 3);
-            ctx.fillRect(2, -9, 2, 3);
-        } else if (creature.creatureType === 'bear') {
-            ctx.fillStyle = '#667375'; ctx.fillRect(0, -5, 5, 4);
-            ctx.fillStyle = '#decece'; ctx.fillRect(4, -6, 2, 3);
-            ctx.fillStyle = '#666'; ctx.fillRect(6, -5, 1, 1);
-            ctx.fillStyle = '#edfffd'; ctx.fillRect(3, -8, 1, 3);
-            ctx.fillRect(5, -9, 1, 3);
-        } else if (creature.creatureType === 'tennisbear') {
+        // A more detailed grey rabbit with shading and a pink nose.
+		if (creature.creatureType === 'rabbit1') {
+			// Body
+			ctx.fillStyle = '#999999'; ctx.fillRect(1, -5, 5, 4); // Main body color
+			ctx.fillStyle = '#808080'; ctx.fillRect(1, -4, 5, 2); // Shading on the lower body
+			ctx.fillStyle = '#a1a1a1'; ctx.fillRect(2, -5, 3, 1); // Highlight on the back
+		
+			// Head & Ears
+			ctx.fillStyle = '#c0fafc'; ctx.fillRect(4, -7, 3, 3); // Head
+			ctx.fillStyle = '#a2e8ea'; ctx.fillRect(4, -6, 3, 1); // Shading on the head
+			ctx.fillStyle = '#cbd4d1'; ctx.fillRect(3, -9, 1, 3); // Left ear
+			ctx.fillStyle = '#b8c2bf'; ctx.fillRect(3, -8, 1, 1); // Left ear shading
+			ctx.fillStyle = '#cbd4d1'; ctx.fillRect(5, -9, 1, 3); // Right ear
+			ctx.fillStyle = '#b8c2bf'; ctx.fillRect(5, -8, 1, 1); // Right ear shading
+		
+			// Eye & Nose
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -6, 1, 1); // Eye
+			ctx.fillStyle = '#ffc0cb'; ctx.fillRect(7, -5, 1, 1); // Pink nose
+		
+		} else if (creature.creatureType === 'rabbit2') {
+			// A more detailed brown rabbit with a fluffy tail.
+			// Body
+			ctx.fillStyle = '#967969'; ctx.fillRect(0, -5, 5, 4); // Main body
+			ctx.fillStyle = '#795c4e'; ctx.fillRect(0, -4, 5, 2); // Body shading
+			ctx.fillStyle = '#ab8d7b'; ctx.fillRect(1, -5, 3, 1); // Highlight
+		
+			// Head & Ears
+			ctx.fillStyle = '#afb6c8'; ctx.fillRect(4, -7, 3, 3); // Head
+			ctx.fillStyle = '#98a0b3'; ctx.fillRect(4, -6, 3, 1); // Head shading
+			ctx.fillStyle = '#ddb3ff'; ctx.fillRect(3, -10, 1, 4); // Left ear
+			ctx.fillStyle = '#c5a1e6'; ctx.fillRect(3, -9, 1, 1); // Left ear inner
+			ctx.fillStyle = '#ddb3ff'; ctx.fillRect(5, -10, 1, 4); // Right ear
+			ctx.fillStyle = '#c5a1e6'; ctx.fillRect(5, -9, 1, 1); // Right ear inner
+		
+			// Eye & Tail
+			ctx.fillStyle = '#333'; ctx.fillRect(6, -6, 1, 1); // Eye
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(-1, -4, 1, 2); // Fluffy tail
+			ctx.fillStyle = '#f0f0f0'; ctx.fillRect(0, -3, 1, 1); // Tail shading
+		
+		} else if (creature.creatureType === 'rabbit3') {
+			// A dark grey rabbit with distinct paws.
+			// Body & Paws
+			ctx.fillStyle = '#8a8a8a'; ctx.fillRect(0, -5, 5, 3); // Body
+			ctx.fillStyle = '#707070'; ctx.fillRect(0, -3, 5, 1); // Body shading
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(1, -2, 1, 1); // Front paw
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(4, -2, 1, 1); // Back paw
+		
+			// Head & Ears
+			ctx.fillStyle = '#cbd4d1'; ctx.fillRect(4, -7, 3, 3); // Head
+			ctx.fillStyle = '#b8c2bf'; ctx.fillRect(4, -6, 3, 1); // Head shading
+			ctx.fillStyle = '#c0fafc'; ctx.fillRect(2, -10, 2, 4); // Left ear
+			ctx.fillStyle = '#a2e8ea'; ctx.fillRect(3, -9, 1, 2); // Inner left ear
+			ctx.fillStyle = '#c0fafc'; ctx.fillRect(5, -10, 1, 3); // Right ear
+		
+			// Eye
+			ctx.fillStyle = '#6c5c65'; ctx.fillRect(6, -6, 1, 1); // Eye
+		
+		} else if (creature.creatureType === 'rabbit4') {
+			// A tan rabbit with a carrot.
+			// Body
+			ctx.fillStyle = '#b38b6d'; ctx.fillRect(0, -5, 5, 4); // Main body color
+			ctx.fillStyle = '#9e7a60'; ctx.fillRect(0, -4, 5, 2); // Shading
+		
+			// Head & Ears
+			ctx.fillStyle = '#decece'; ctx.fillRect(4, -7, 2, 3); // Head
+			ctx.fillStyle = '#c9bcbc'; ctx.fillRect(4, -6, 2, 1); // Head shading
+			ctx.fillStyle = '#edfffd'; ctx.fillRect(3, -9, 1, 3); // Left ear
+			ctx.fillStyle = '#d4e5e3'; ctx.fillRect(3, -8, 1, 1); // Inner ear
+			ctx.fillStyle = '#edfffd'; ctx.fillRect(5, -9, 1, 3); // Right ear
+			ctx.fillStyle = '#d4e5e3'; ctx.fillRect(5, -8, 1, 1); // Inner ear
+		
+			// Eye & Carrot
+			ctx.fillStyle = '#666'; ctx.fillRect(5, -6, 1, 1); // Eye
+			ctx.fillStyle = '#ff9900'; ctx.fillRect(6, -5, 2, 1); // Carrot body
+			ctx.fillStyle = '#00cc00'; ctx.fillRect(7, -6, 1, 1); // Carrot top
+		} else if (creature.creatureType === 'tennisbear') {
 			ctx.fillStyle = '#5C4033'; ctx.fillRect(0, -10, 12, 8);
 			ctx.fillStyle = '#3D2B1F'; ctx.fillRect(1, -2, 4, 3); ctx.fillRect(7, -2, 4, 3);
 			ctx.fillStyle = '#5C4033'; ctx.fillRect(10, -13, 5, 4);
