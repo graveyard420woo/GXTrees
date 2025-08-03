@@ -1460,7 +1460,7 @@
 			if (e.trail.length > 1) {
 				// 1. Create a linear gradient from the meteor head to the tail's end
 				const trailHead = { x: e.x, y: e.y };
-				const trailEnd = e.trail[0]-100; // The oldest point defines the gradient's end
+				const trailEnd = e.trail[0]; // The oldest point defines the gradient's end
 				const gradient = ctx.createLinearGradient(trailHead.x, trailHead.y, trailEnd.x, trailEnd.y);
 	
 				const rgbColor = hexToRgbA(e.colors.glow); // Use the glow color for the trail
