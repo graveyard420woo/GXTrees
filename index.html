@@ -1095,7 +1095,14 @@
             events.push(meteor);
         } else if (type === 'creature') {
             const startSide = globalRandom() < 0.5 ? -40 : canvas.width + 40;
-            const creatureTypes = ['rabbit1', 'rabbit2', 'rabbit3', 'rabbit4'];
+            const creatureTypes = [
+				'rabbit1', 'rabbit2', 'rabbit3', 'rabbit4', 'rabbit5', 'rabbit6', 
+				'rabbit7', 'rabbit8', 'rabbit9', 'rabbit10', 'rabbit11', 'rabbit12', 
+				'rabbit13', 'rabbit14', 'rabbit15', 'rabbit16', 'rabbit17', 'rabbit18', 
+				'rabbit19', 'rabbit20', 'rabbit21', 'rabbit22', 'rabbit23', 'rabbit24', 
+				'rabbit25', 'rabbit26', 'rabbit27', 'rabbit28', 'rabbit29', 'rabbit30', 
+				'rabbit31', 'rabbit32', 'rabbit33', 'rabbit34', 'rabbit35', 'rabbit36'
+			];
             const creatureType = creatureTypes[Math.floor(globalRandom() * creatureTypes.length)];
             
             const newCreature = {
@@ -2244,6 +2251,337 @@
 			ctx.fillStyle = '#666'; ctx.fillRect(5, -6, 1, 1); // Eye
 			ctx.fillStyle = '#ff9900'; ctx.fillRect(6, -5, 2, 1); // Carrot body
 			ctx.fillStyle = '#00cc00'; ctx.fillRect(7, -6, 1, 1); // Carrot top
+		} 
+		// 5. Calico Rabbit
+		else if (creature.creatureType === 'rabbit5') {
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(0, -5, 6, 4);
+			ctx.fillStyle = '#ff9900'; ctx.fillRect(1, -4, 2, 2);
+			ctx.fillStyle = '#663300'; ctx.fillRect(4, -5, 2, 2);
+			ctx.fillStyle = '#ffc0cb'; ctx.fillRect(3, -9, 1, 3);
+			ctx.fillRect(5, -9, 1, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -4, 1, 1);
+		}
+		
+		// 6. Black Rabbit with Red Eyes
+		else if (creature.creatureType === 'rabbit6') {
+			ctx.fillStyle = '#333333'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#222222'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#ff0000'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#444444'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 7. Rabbit with a Top Hat
+		else if (creature.creatureType === 'rabbit7') {
+			ctx.fillStyle = '#cccccc'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#afb6c8'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#ddb3ff'; ctx.fillRect(2, -7, 1, 2);
+			// Top Hat
+			ctx.fillStyle = '#000000'; ctx.fillRect(3, -11, 4, 1);
+			ctx.fillRect(4, -10, 2, 3);
+		}
+		
+		// 8. Zombie Rabbit
+		else if (creature.creatureType === 'rabbit8') {
+			ctx.fillStyle = '#7aa27a'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#99b899'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#ff0000'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#cccccc'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillStyle = '#555'; ctx.fillRect(4, -4, 1, 1);
+		}
+		
+		// 9. Rainbow Rabbit
+		else if (creature.creatureType === 'rabbit9') {
+			ctx.fillStyle = '#ff0000'; ctx.fillRect(0, -5, 1, 4);
+			ctx.fillStyle = '#ff9900'; ctx.fillRect(1, -5, 1, 4);
+			ctx.fillStyle = '#ffff00'; ctx.fillRect(2, -5, 1, 4);
+			ctx.fillStyle = '#00ff00'; ctx.fillRect(3, -5, 1, 4);
+			ctx.fillStyle = '#0000ff'; ctx.fillRect(4, -5, 1, 4);
+			ctx.fillStyle = '#4b0082'; ctx.fillRect(5, -5, 1, 4);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -4, 1, 1);
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 10. Angora Rabbit (Fluffy)
+		else if (creature.creatureType === 'rabbit10') {
+			ctx.fillStyle = '#f0f0f0'; ctx.fillRect(-1, -6, 7, 5);
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(4, -7, 3, 3);
+			ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#e0e0e0'; ctx.fillRect(3, -9, 1, 3);
+			ctx.fillRect(5, -9, 1, 3);
+		}
+		
+		// 11. Dutch Rabbit
+		else if (creature.creatureType === 'rabbit11') {
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(0, -5, 3, 4);
+			ctx.fillStyle = '#663300'; ctx.fillRect(3, -5, 3, 4);
+			ctx.fillStyle = '#663300'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -4, 1, 1);
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillStyle = '#663300'; ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 12. Ninja Rabbit
+		else if (creature.creatureType === 'rabbit12') {
+			ctx.fillStyle = '#1a1a1a'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#333333'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#ff0000'; ctx.fillRect(5, -5, 2, 1); // Headband
+			ctx.fillStyle = '#444444'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 13. Blue Rabbit with a Carrot
+		else if (creature.creatureType === 'rabbit13') {
+			ctx.fillStyle = '#6699ff'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#99ccff'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+			// Carrot
+			ctx.fillStyle = '#ff9900'; ctx.fillRect(-2, -4, 2, 1);
+			ctx.fillStyle = '#00cc00'; ctx.fillRect(-3, -4, 1, 1);
+		}
+		
+		// 14. Lava Rabbit
+		else if (creature.creatureType === 'rabbit14') {
+			ctx.fillStyle = '#ff3300'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#ffff00'; ctx.fillRect(1, -4, 3, 2);
+			ctx.fillStyle = '#cc0000'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#ff9900'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 15. Forest Rabbit
+		else if (creature.creatureType === 'rabbit15') {
+			ctx.fillStyle = '#663300'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#996633'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#009900'; ctx.fillRect(2, -8, 1, 3); // Leaf on ear
+			ctx.fillStyle = '#996633'; ctx.fillRect(4, -8, 1, 3);
+		}
+		
+		// 16. Ghost Rabbit
+		else if (creature.creatureType === 'rabbit16') {
+			ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = 'rgba(230, 230, 250, 0.7)'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#000'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = 'rgba(255, 255, 255, 0.7)'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 17. Pirate Rabbit
+		else if (creature.creatureType === 'rabbit17') {
+			ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#c0fafc'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1); // Eye patch
+			ctx.fillStyle = '#cbd4d1'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(4, -8, 3, 1); // Bandana
+		}
+		
+		// 18. Steampunk Rabbit
+		else if (creature.creatureType === 'rabbit18') {
+			ctx.fillStyle = '#a67b5b'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#c8a183'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#ffcc00'; ctx.fillRect(6, -5, 1, 1); // Monocle
+			ctx.fillStyle = '#e6c5a8'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+			ctx.fillStyle = '#654321'; ctx.fillRect(1, -6, 1, 1); // Gear
+		}
+		
+		// 19. Checkered Rabbit
+		else if (creature.creatureType === 'rabbit19') {
+			for (let i = 0; i < 5; i++) {
+				for (let j = 0; j < 4; j++) {
+					ctx.fillStyle = (i + j) % 2 === 0 ? '#ffffff' : '#000000';
+					ctx.fillRect(i, j - 5, 1, 1);
+				}
+			}
+			ctx.fillStyle = '#cccccc'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#dddddd'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 20. Galaxy Rabbit
+		else if (creature.creatureType === 'rabbit20') {
+			ctx.fillStyle = '#0d0d26'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(1, -4, 1, 1); // Star
+			ctx.fillRect(3, -3, 1, 1); // Star
+			ctx.fillStyle = '#4d4d8d'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#b3b3e6'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 21. Strawberry Rabbit
+		else if (creature.creatureType === 'rabbit21') {
+			ctx.fillStyle = '#ff3366'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(1, -4, 1, 1); // Seed
+			ctx.fillRect(3, -4, 1, 1); // Seed
+			ctx.fillStyle = '#ff6699'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#009933'; ctx.fillRect(4, -8, 2, 1); // Leaf hat
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
+		}
+		
+		// 22. Gold Rabbit
+		else if (creature.creatureType === 'rabbit22') {
+			ctx.fillStyle = '#ffd700'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#ffec80'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#b8860b'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#fffacd'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 23. Robot Rabbit
+		else if (creature.creatureType === 'rabbit23') {
+			ctx.fillStyle = '#c0c0c0'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#e0e0e0'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#ff0000'; ctx.fillRect(6, -5, 1, 1); // Red eye
+			ctx.fillStyle = '#d0d0d0'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+			ctx.fillStyle = '#a0a0a0'; ctx.fillRect(1, -3, 1, 1); // Bolt
+		}
+		
+		// 24. Winged Rabbit
+		else if (creature.creatureType === 'rabbit24') {
+			ctx.fillStyle = '#cccccc'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#afb6c8'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#ddb3ff'; ctx.fillRect(3, -9, 1, 3);
+			ctx.fillRect(2, -7, 1, 6);
+			// Wings
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(-2, -7, 2, 4);
+			ctx.fillStyle = '#f0f0f0'; ctx.fillRect(-1, -6, 1, 3);
+		}
+		
+		// 25. Jester Rabbit
+		else if (creature.creatureType === 'rabbit25') {
+			ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 3);
+			ctx.fillStyle = '#cbd4d1'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#6c5c65'; ctx.fillRect(6, -4, 1, 1);
+			// Jester Hat
+			ctx.fillStyle = '#ff0000'; ctx.fillRect(2, -10, 2, 4);
+			ctx.fillStyle = '#0000ff'; ctx.fillRect(4, -10, 2, 4);
+		}
+		
+		// 26. Inverted Color Rabbit
+		else if (creature.creatureType === 'rabbit26') {
+			ctx.fillStyle = '#996666'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#213131'; ctx.fillRect(4, -6, 2, 3);
+			ctx.fillStyle = '#999999'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#120002'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -9, 1, 3);
+		}
+		
+		// 27. Bumblebee Rabbit
+		else if (creature.creatureType === 'rabbit27') {
+			ctx.fillStyle = '#ffff00'; ctx.fillRect(0, -5, 5, 1);
+			ctx.fillStyle = '#000000'; ctx.fillRect(0, -4, 5, 1);
+			ctx.fillStyle = '#ffff00'; ctx.fillRect(0, -3, 5, 1);
+			ctx.fillStyle = '#000000'; ctx.fillRect(0, -2, 5, 1);
+			ctx.fillStyle = '#ffff00'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
+		}
+		
+		// 28. Alien Rabbit
+		else if (creature.creatureType === 'rabbit28') {
+			ctx.fillStyle = '#99cc99'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#cce5cc'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#000000'; ctx.fillRect(5, -5, 2, 2); // Big eye
+			ctx.fillStyle = '#669966'; ctx.fillRect(3, -9, 1, 4); // Antenna
+			ctx.fillStyle = '#ff0000'; ctx.fillRect(3, -10, 1, 1); // Antenna light
+		}
+		
+		// 29. Wizard Rabbit
+		else if (creature.creatureType === 'rabbit29') {
+			ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#c0fafc'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
+			// Wizard Hat
+			ctx.fillStyle = '#0000ff'; ctx.fillRect(3, -10, 5, 1);
+			ctx.fillRect(4, -9, 3, 2);
+			ctx.fillRect(5, -8, 1, 2);
+			ctx.fillStyle = '#ffff00'; ctx.fillRect(5, -9, 1, 1); // Star on hat
+		}
+		
+		// 30. King Rabbit
+		else if (creature.creatureType === 'rabbit30') {
+			ctx.fillStyle = '#cccccc'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#afb6c8'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+			// Crown
+			ctx.fillStyle = '#ffd700'; ctx.fillRect(3, -9, 4, 1);
+			ctx.fillRect(3, -8, 1, 1);
+			ctx.fillRect(5, -8, 1, 1);
+			ctx.fillRect(7, -8, 1, 1);
+		}
+		
+		// 31. Gardener Rabbit
+		else if (creature.creatureType === 'rabbit31') {
+			ctx.fillStyle = '#c68c53'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#d9a066'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#333'; ctx.fillRect(6, -5, 1, 1);
+			// Straw Hat
+			ctx.fillStyle = '#ffcc66'; ctx.fillRect(2, -8, 6, 1);
+			ctx.fillRect(3, -7, 4, 1);
+			// Holding a flower
+			ctx.fillStyle = '#ff3399'; ctx.fillRect(-1, -4, 1, 1);
+			ctx.fillStyle = '#009933'; ctx.fillRect(-1, -3, 1, 1);
+		}
+		
+		// 32. Sunset Rabbit
+		else if (creature.creatureType === 'rabbit32') {
+			ctx.fillStyle = '#ff6666'; ctx.fillRect(0, -5, 5, 2);
+			ctx.fillStyle = '#ffcc66'; ctx.fillRect(0, -3, 5, 2);
+			ctx.fillStyle = '#ff9999'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 33. Ice Cream Rabbit
+		else if (creature.creatureType === 'rabbit33') {
+			ctx.fillStyle = '#ff99cc'; ctx.fillRect(0, -5, 5, 4); // Strawberry scoop
+			ctx.fillStyle = '#ffffcc'; ctx.fillRect(0, -2, 5, 2); // Cone
+			ctx.fillStyle = '#ff66b2'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#ff3300'; ctx.fillRect(2, -6, 1, 1); // Cherry on top
+		}
+		
+		// 34. Deep Sea Rabbit
+		else if (creature.creatureType === 'rabbit34') {
+			ctx.fillStyle = '#003366'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#006699'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#ffff00'; ctx.fillRect(6, -5, 2, 1); // Angler light
+			ctx.fillStyle = '#333'; ctx.fillRect(5, -5, 1, 1);
+			ctx.fillStyle = '#001a33'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 35. Skeleton Rabbit
+		else if (creature.creatureType === 'rabbit35') {
+			ctx.fillStyle = '#000000'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(1, -4, 3, 2); // Ribs
+			ctx.fillStyle = '#000000'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#ffffff'; ctx.fillRect(5, -5, 1, 1); // Eye socket
+			ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(5, -8, 1, 3);
+		}
+		
+		// 36. Farmer Rabbit
+		else if (creature.creatureType === 'rabbit36') {
+			ctx.fillStyle = '#999999'; ctx.fillRect(0, -5, 5, 4);
+			ctx.fillStyle = '#c0fafc'; ctx.fillRect(4, -6, 3, 3);
+			ctx.fillStyle = '#111'; ctx.fillRect(6, -5, 1, 1);
+			ctx.fillStyle = '#cbd4d1'; ctx.fillRect(3, -8, 1, 3);
+			ctx.fillRect(4, -8, 3, 5);
+			// Overalls
+			ctx.fillStyle = '#0000ff'; ctx.fillRect(1, -3, 3, 2);
+			ctx.fillRect(1, -4, 1, 2);
+			ctx.fillRect(3, -4, 1, 2);
 		} else if (creature.creatureType === 'tennisbear') {
 			ctx.fillStyle = '#5C4033'; ctx.fillRect(0, -10, 12, 8);
 			ctx.fillStyle = '#3D2B1F'; ctx.fillRect(1, -2, 4, 3); ctx.fillRect(7, -2, 4, 3);
